@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/path"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:text="Large Text"
+        android:textColor="#8C1717"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <ImageButton
+        android:id="@+id/switchView"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@android:drawable/ic_dialog_dialer" />
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/path"
+        android:layout_marginRight="350dp" >
+    </ListView>
+
+    <ImageButton
+        android:id="@+id/sortAlpha"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/switchView"
+        android:src="@android:drawable/ic_menu_sort_alphabetically" />
+
+</RelativeLayout>
