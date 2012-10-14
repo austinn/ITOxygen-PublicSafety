@@ -8,9 +8,11 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -39,6 +41,16 @@ public class MainActivityList extends ListActivity {
 		history.add("Clear History"); //adds a clear history "button"
 		if(root != null) { getDir(root); }
 
+//		// Access the default SharedPreferences
+//	    SharedPreferences preferences = 
+//	    PreferenceManager.getDefaultSharedPreferences(this);
+//	    // The SharedPreferences editor - must use commit() to submit changes
+//	    SharedPreferences.Editor editor = preferences.edit();
+//	    // Edit the saved preferences
+//	    editor.putString("UserName", "JaneDoe");
+//	    editor.putInt("UserAge", 22);
+//	    editor.commit();
+		
 		switchView = (ImageButton)findViewById(R.id.switchView);
 		sortAlpha = (ImageButton)findViewById(R.id.sortAlpha);
 		switchView.setBackgroundColor(Color.GRAY);
@@ -54,14 +66,22 @@ public class MainActivityList extends ListActivity {
 		sortAlpha.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
 				if (isSorted) {
-					getDir(history.get(history.size()-1).toString());
-					populate();
+					if(history.size() <= 1) {
+						getDir(root);
+					}
+					else {
+						getDir(history.get(history.size()-1).toString());
+					}					populate();
 					sortAlpha.setBackgroundColor(Color.GRAY);
 					isSorted = false;
 				}
 				else {
-					getDir(history.get(history.size()-1).toString());
-					Collections.sort(item);
+					if(history.size() <= 1) {
+						getDir(root);
+					}
+					else {
+						getDir(history.get(history.size()-1).toString());
+					}					Collections.sort(item);
 					Collections.sort(path);
 					populate();
 					sortAlpha.setBackgroundColor(Color.DKGRAY);
@@ -69,7 +89,7 @@ public class MainActivityList extends ListActivity {
 				}
 			}	
 		});
-		
+
 		ArrayAdapter<String> historyList =
 				new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, history);
 		historySpinner.setAdapter(historyList);

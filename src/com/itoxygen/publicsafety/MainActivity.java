@@ -57,14 +57,23 @@ public class MainActivity extends Activity {
 		sortAlpha.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
 				if (isSorted) {
-					getDir(history.get(history.size()-1).toString());
+					if(history.size() <= 1) {
+						getDir(root);
+					}
+					else {
+						getDir(history.get(history.size()-1).toString());
+					}
 					populate(); //puts buttons on screen
 					sortAlpha.setBackgroundColor(Color.GRAY);
 					isSorted = false; //global boolean
 				}
 				else {
-					getDir(history.get(history.size()-1).toString());
-					Collections.sort(item); //sorts the filenames
+					if(history.size() <= 1) {
+						getDir(root);
+					}
+					else {
+						getDir(history.get(history.size()-1).toString());
+					}					Collections.sort(item); //sorts the filenames
 					Collections.sort(path); //sorts the spinner
 					populate(); //puts buttons on screen
 					sortAlpha.setBackgroundColor(Color.DKGRAY);

@@ -4,16 +4,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/path"
+    <Spinner
+        android:id="@+id/historySpinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:text="Large Text"
-        android:textColor="#8C1717"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_alignParentTop="true" />
 
     <ImageButton
         android:id="@+id/switchView"
@@ -28,8 +25,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/path"
-        android:layout_marginRight="350dp" >
+        android:layout_below="@+id/historySpinner"
+        android:layout_toLeftOf="@+id/sortAlpha" >
+
     </ListView>
 
     <ImageButton
