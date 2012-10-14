@@ -31,6 +31,7 @@ public class MainActivityList extends ListActivity {
 	private ImageButton switchView, sortAlpha;
 	boolean isSorted = false;
 	private Spinner historySpinner;
+	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -65,23 +66,19 @@ public class MainActivityList extends ListActivity {
 
 		sortAlpha.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
+				if(history.size() <= 1) {
+					getDir(root);
+				}
+				else {
+					getDir(history.get(history.size()-1).toString());
+				}
 				if (isSorted) {
-					if(history.size() <= 1) {
-						getDir(root);
-					}
-					else {
-						getDir(history.get(history.size()-1).toString());
-					}					populate();
+					populate();
 					sortAlpha.setBackgroundColor(Color.GRAY);
 					isSorted = false;
 				}
 				else {
-					if(history.size() <= 1) {
-						getDir(root);
-					}
-					else {
-						getDir(history.get(history.size()-1).toString());
-					}					Collections.sort(item);
+					Collections.sort(item);
 					Collections.sort(path);
 					populate();
 					sortAlpha.setBackgroundColor(Color.DKGRAY);

@@ -9,8 +9,10 @@ import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -22,7 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 public class MainActivity extends Activity {
-
+	
 	private List<String> item = null; 
 	private List<String> path = null;
 	private List<String> history = new ArrayList<String>(); //list of previously clicked on file paths 
@@ -31,7 +33,7 @@ public class MainActivity extends Activity {
 	private String root;
 	private ImageButton switchView, sortAlpha;
 	boolean isSorted = false;
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -56,24 +58,19 @@ public class MainActivity extends Activity {
 
 		sortAlpha.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
+				if(history.size() <= 1) {
+					getDir(root);
+				}
+				else {
+					getDir(history.get(history.size()-1).toString());
+				}
 				if (isSorted) {
-					if(history.size() <= 1) {
-						getDir(root);
-					}
-					else {
-						getDir(history.get(history.size()-1).toString());
-					}
 					populate(); //puts buttons on screen
 					sortAlpha.setBackgroundColor(Color.GRAY);
 					isSorted = false; //global boolean
 				}
 				else {
-					if(history.size() <= 1) {
-						getDir(root);
-					}
-					else {
-						getDir(history.get(history.size()-1).toString());
-					}					Collections.sort(item); //sorts the filenames
+					Collections.sort(item); //sorts the filenames
 					Collections.sort(path); //sorts the spinner
 					populate(); //puts buttons on screen
 					sortAlpha.setBackgroundColor(Color.DKGRAY);
@@ -132,26 +129,43 @@ public class MainActivity extends Activity {
 	 * Creates 5 rows
 	 */
 	private void populate() {
-
 		layout = (LinearLayout) findViewById(R.id.lin);
 		layout.removeAllViews();
-		for (int i = 0; i < 5; i++) {
+		// finds the width and height of the screen in pixels 
+		// files.length = # files
+		int lWidth = 0;
+		int lHeight = 0;
+		Display display = getWindowManager().getDefaultDisplay();
+		try{
+			Point size = new Point();
+			display.getSize(size); // Suppressed for API 13+
+			lWidth = size.x;
+			lHeight = size.y;
+		}catch( NoSuchMethodError nsmError ){
+			lWidth = display.getWidth();
+			lHeight = display.getHeight();
+		}
+		lWidth -= 150; // HardCoded menu bar size
+		int lIconsX = lWidth / 150;  // HardCoded estimation
+		
+		// adjust
+		for ( int lNumInCol = 0; lNumInCol < 150; lNumInCol++ ) { // 150 is an arbitrary large number
 			LinearLayout row = new LinearLayout(this);
 			row.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 			Button btnTag = null;
 			Button tv = null;
-			for (int j = 0; j < 6; j++) { 
-				if(j+(i*6) < item.size()) {
+			for ( int lNumInRow = 0; lNumInRow < lIconsX; lNumInRow++ ) { 
+				if( lNumInRow + ( lNumInCol * lIconsX ) < item.size() ) {
 					btnTag = new Button(this);
 					tv = new Button(this);
 					tv.setText("");
 					tv.setBackgroundDrawable(null);
-					btnTag.setText(item.get(j + (i * 6)));
+					btnTag.setText(item.get(lNumInRow + (lNumInCol * lIconsX)));
 					btnTag.setTextSize(14);
 					btnTag.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 					btnTag.setHeight(150);
 					btnTag.setWidth(150);
-					btnTag.setId(j + (i * 6));
+					btnTag.setId(lNumInRow + (lNumInCol * 6));
 					btnTag.setOnClickListener(new ClickListener());
 					row.addView(btnTag);
 				}
@@ -166,8 +180,7 @@ public class MainActivity extends Activity {
 		historySpinner.setSelection(history.size()-1); //sets the spinner to display the history correctly
 
 	}
-
-
+	
 	/**
 	 * Class that is called when a button from the commandDialog is pressed
 	 */

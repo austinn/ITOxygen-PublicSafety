@@ -14,8 +14,8 @@
 
     <ImageButton
         android:id="@+id/switchView"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="75sp"
+        android:layout_height="75sp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:src="@android:drawable/ic_dialog_dialer" />
@@ -32,8 +32,8 @@
 
     <ImageButton
         android:id="@+id/sortAlpha"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="75sp"
+        android:layout_height="75sp"
         android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/switchView"
         android:src="@android:drawable/ic_menu_sort_alphabetically" />
