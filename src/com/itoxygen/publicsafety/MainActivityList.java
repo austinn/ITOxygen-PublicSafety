@@ -1,9 +1,6 @@
 package com.itoxygen.publicsafety;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,32 +13,31 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Spinner;
 
 public class MainActivityList extends ListActivity {
 
 	private List<String> item = null;
 	private List<String> path = null;
 	private String root;
-	private TextView myPath;
+	private List<String> history = new ArrayList<String>(); //list of previously clicked on file paths 
 	private ImageButton switchView, sortAlpha;
 	boolean isSorted = false;
-
-	Socket socket = null;
-	DataOutputStream dataOutputStream = null;
-	DataInputStream dataInputStream = null;
-
+	private Spinner historySpinner;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_list);
-		myPath = (TextView)findViewById(R.id.path);
-		root = Environment.getExternalStorageDirectory().getPath();
-		getDir(root);
+		historySpinner = (Spinner)findViewById(R.id.historySpinner);
+		root = Environment.getExternalStorageDirectory().getPath(); //gets the root of the SD card or Internal Storage
+		history.add("Clear History"); //adds a clear history "button"
+		if(root != null) { getDir(root); }
 
 		switchView = (ImageButton)findViewById(R.id.switchView);
 		sortAlpha = (ImageButton)findViewById(R.id.sortAlpha);
@@ -58,13 +54,13 @@ public class MainActivityList extends ListActivity {
 		sortAlpha.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
 				if (isSorted) {
-					getDir(myPath.getText().toString());
+					getDir(history.get(history.size()-1).toString());
 					populate();
 					sortAlpha.setBackgroundColor(Color.GRAY);
 					isSorted = false;
 				}
 				else {
-					getDir(myPath.getText().toString());
+					getDir(history.get(history.size()-1).toString());
 					Collections.sort(item);
 					Collections.sort(path);
 					populate();
@@ -73,12 +69,27 @@ public class MainActivityList extends ListActivity {
 				}
 			}	
 		});
+		
+		ArrayAdapter<String> historyList =
+				new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, history);
+		historySpinner.setAdapter(historyList);
+		historySpinner.setSelection(history.size()-1);
 
+		historySpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int pos, long arg3) {
+				//getDir(historySpinner.getItemAtPosition(pos).toString());
+				if(historySpinner.getItemAtPosition(pos).toString().equals("Clear History")) {
+					history.clear();
+					history.add("Clear History");
+				}
+			}
+			public void onNothingSelected(AdapterView<?> arg0) { }
+		});
 	}
 
 	private void getDir(String dirPath)
 	{
-		myPath.setText(dirPath);
 		item = new ArrayList<String>();
 		path = new ArrayList<String>();
 		File f = new File(dirPath);
@@ -109,6 +120,9 @@ public class MainActivityList extends ListActivity {
 		populate();
 	}
 
+	/**
+	 * 
+	 */
 	private void populate() {
 		ArrayAdapter<String> fileList =
 				new ArrayAdapter<String>(this, R.layout.row, item);
@@ -117,27 +131,23 @@ public class MainActivityList extends ListActivity {
 
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		// TODO Auto-generated method stub
 		File file = new File(path.get(position));
-
+		history.add(path.get(position));
 		if (file.isDirectory())
-		{
-			//if(isNetworkAvailable()) { new DownloadFilesTask().execute("GPS", null, null); } 
-
+		{ 
 			if(file.canRead()){
 				getDir(path.get(position));
-			}else{
+			} else{
 				new AlertDialog.Builder(this)
 				.setIcon(R.drawable.ic_launcher)
 				.setTitle("[" + file.getName() + "] folder can't be read!")
 				.setPositiveButton("OK", null).show(); 
 			} 
-		}else {
+		} else {
 			new AlertDialog.Builder(this)
 			.setIcon(R.drawable.ic_launcher)
 			.setTitle("[" + file.getName() + "]")
 			.setPositiveButton("OK", null).show();
-
 		}
 	}
 
