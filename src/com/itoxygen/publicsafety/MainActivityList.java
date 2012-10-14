@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -31,30 +32,24 @@ public class MainActivityList extends ListActivity {
 	private ImageButton switchView, sortAlpha;
 	boolean isSorted = false;
 	private Spinner historySpinner;
+	// Access the default SharedPreferences
+	SharedPreferences preferences;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_list);
 		historySpinner = (Spinner)findViewById(R.id.historySpinner);
+		sortAlpha = (ImageButton)findViewById(R.id.sortAlpha);
+		sortAlpha.setBackgroundColor(Color.GRAY);
 		root = Environment.getExternalStorageDirectory().getPath(); //gets the root of the SD card or Internal Storage
 		history.add("Clear History"); //adds a clear history "button"
 		if(root != null) { getDir(root); }
-
-//		// Access the default SharedPreferences
-//	    SharedPreferences preferences = 
-//	    PreferenceManager.getDefaultSharedPreferences(this);
-//	    // The SharedPreferences editor - must use commit() to submit changes
-//	    SharedPreferences.Editor editor = preferences.edit();
-//	    // Edit the saved preferences
-//	    editor.putString("UserName", "JaneDoe");
-//	    editor.putInt("UserAge", 22);
-//	    editor.commit();
-		
+		preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		isSorted = preferences.getBoolean("Alpha", false); //gets the boolean from SharedPrefs
+		checkSort();
 		switchView = (ImageButton)findViewById(R.id.switchView);
-		sortAlpha = (ImageButton)findViewById(R.id.sortAlpha);
 		switchView.setBackgroundColor(Color.GRAY);
-		sortAlpha.setBackgroundColor(Color.GRAY);
 		switchView.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
 				Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -65,28 +60,7 @@ public class MainActivityList extends ListActivity {
 
 		sortAlpha.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
-				if (isSorted) {
-					if(history.size() <= 1) {
-						getDir(root);
-					}
-					else {
-						getDir(history.get(history.size()-1).toString());
-					}					populate();
-					sortAlpha.setBackgroundColor(Color.GRAY);
-					isSorted = false;
-				}
-				else {
-					if(history.size() <= 1) {
-						getDir(root);
-					}
-					else {
-						getDir(history.get(history.size()-1).toString());
-					}					Collections.sort(item);
-					Collections.sort(path);
-					populate();
-					sortAlpha.setBackgroundColor(Color.DKGRAY);
-					isSorted = true;
-				}
+				checkSort();
 			}	
 		});
 
@@ -106,6 +80,36 @@ public class MainActivityList extends ListActivity {
 			}
 			public void onNothingSelected(AdapterView<?> arg0) { }
 		});
+	}
+
+	protected void checkSort() {
+		Log.d("SHARED", preferences.getBoolean("Alpha", false) + "");
+		if (isSorted) {
+			if(history.size() <= 1) {
+				getDir(root);
+			}
+			else {
+				getDir(history.get(history.size()-1).toString());
+			}					
+			Collections.sort(item);
+			Collections.sort(path);
+			sortAlpha.setBackgroundColor(Color.DKGRAY);
+			isSorted = false;
+		}
+		else {
+			if(history.size() <= 1) {
+				getDir(root);
+			}
+			else {
+				getDir(history.get(history.size()-1).toString());
+			}					
+			sortAlpha.setBackgroundColor(Color.GRAY);
+			isSorted = true;
+		}
+		SharedPreferences.Editor editor = preferences.edit(); // The SharedPreferences editor - must use commit() to submit changes
+		editor.putBoolean("Alpha", isSorted); // Edit the saved preferences
+		editor.commit();
+		populate();
 	}
 
 	private void getDir(String dirPath)

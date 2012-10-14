@@ -8,9 +8,12 @@ import android.app.AlertDialog;
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -31,21 +34,25 @@ public class MainActivity extends Activity {
 	private String root;
 	private ImageButton switchView, sortAlpha;
 	boolean isSorted = false;
+	// Access the default SharedPreferences
+	SharedPreferences preferences;
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main); 
 		historySpinner = (Spinner)findViewById(R.id.historySpinner);
+		sortAlpha = (ImageButton)findViewById(R.id.sortAlpha);
+		sortAlpha.setBackgroundColor(Color.GRAY);
 		root = Environment.getExternalStorageDirectory().getPath(); //gets the root path of SD card
 		history.add("Clear History"); //adds a "button" to clear history
 		if(root != null) { getDir(root); } 
-		populate(); //puts buttons on screen
-
+		preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		isSorted = preferences.getBoolean("Alpha", false); //gets the boolean from SharedPrefs
+		checkSort();
 		switchView = (ImageButton)findViewById(R.id.switchView);
-		sortAlpha = (ImageButton)findViewById(R.id.sortAlpha);
 		switchView.setBackgroundColor(Color.GRAY);
-		sortAlpha.setBackgroundColor(Color.GRAY);
 		switchView.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
 				Intent intent = new Intent(getApplicationContext(), MainActivityList.class);
@@ -56,29 +63,7 @@ public class MainActivity extends Activity {
 
 		sortAlpha.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
-				if (isSorted) {
-					if(history.size() <= 1) {
-						getDir(root);
-					}
-					else {
-						getDir(history.get(history.size()-1).toString());
-					}
-					populate(); //puts buttons on screen
-					sortAlpha.setBackgroundColor(Color.GRAY);
-					isSorted = false; //global boolean
-				}
-				else {
-					if(history.size() <= 1) {
-						getDir(root);
-					}
-					else {
-						getDir(history.get(history.size()-1).toString());
-					}					Collections.sort(item); //sorts the filenames
-					Collections.sort(path); //sorts the spinner
-					populate(); //puts buttons on screen
-					sortAlpha.setBackgroundColor(Color.DKGRAY);
-					isSorted = true; //global boolean
-				}
+				checkSort();
 			}	
 		});
 
@@ -94,6 +79,35 @@ public class MainActivity extends Activity {
 			public void onNothingSelected(AdapterView<?> arg0) { }
 		});
 
+	}
+
+	protected void checkSort() {
+		if (isSorted) {
+			if(history.size() <= 1) {
+				getDir(root);
+			}
+			else {
+				getDir(history.get(history.size()-1).toString());
+			}
+			sortAlpha.setBackgroundColor(Color.GRAY);
+			isSorted = false; //global boolean
+		}
+		else {
+			if(history.size() <= 1) {
+				getDir(root);
+			}
+			else {
+				getDir(history.get(history.size()-1).toString());
+			}					
+			Collections.sort(item); //sorts the filenames
+			Collections.sort(path); //sorts the spinner
+			sortAlpha.setBackgroundColor(Color.DKGRAY);
+			isSorted = true; //global boolean
+		}
+		SharedPreferences.Editor editor = preferences.edit(); // The SharedPreferences editor - must use commit() to submit changes
+		editor.putBoolean("Alpha", isSorted); // Edit the saved preferences
+		editor.commit();
+		populate(); //puts buttons on screen
 	}
 
 	/**
@@ -135,7 +149,7 @@ public class MainActivity extends Activity {
 
 		layout = (LinearLayout) findViewById(R.id.lin);
 		layout.removeAllViews();
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 5; i++) { //Columns
 			LinearLayout row = new LinearLayout(this);
 			row.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 			Button btnTag = null;
