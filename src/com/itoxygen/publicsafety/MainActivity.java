@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -187,6 +188,7 @@ public class MainActivity extends Activity {
 	 */
 	class ClickListener implements OnClickListener {
 		public void onClick(View v) {
+			Log.v("Click Occurs", "This is a click");
 			File file = new File(path.get(v.getId()));
 			history.add(path.get(v.getId()));
 			if (file.isDirectory()) {
@@ -206,12 +208,16 @@ public class MainActivity extends Activity {
 				}	
 			}
 			else { 
-				new AlertDialog.Builder(MainActivity.this)
+				//check file type
+				Shared.openPdf(file, MainActivity.this);
+				/*new AlertDialog.Builder(MainActivity.this)
 				.setIcon(R.drawable.ic_launcher)
 				.setTitle("[" + file.getName() + "]")
-				.setPositiveButton("OK", null).show();
+				.setPositiveButton("OK", null).show();*/
 			}
 		}
 	}
+	
+
 }
 

@@ -168,10 +168,11 @@ public class MainActivityList extends ListActivity {
 				.setPositiveButton("OK", null).show(); 
 			} 
 		} else {
-			new AlertDialog.Builder(this)
+			Shared.openPdf(file, MainActivityList.this);
+			/*new AlertDialog.Builder(this)
 			.setIcon(R.drawable.ic_launcher)
 			.setTitle("[" + file.getName() + "]")
-			.setPositiveButton("OK", null).show();
+			.setPositiveButton("OK", null).show();*/
 		}
 	}
 
