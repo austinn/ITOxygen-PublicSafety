@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.itoxygen.publicsafety.ActionBar xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/action_bar"
+    android:layout_width="match_parent"
+    android:layout_height="58dip"
+    android:background="@drawable/ic_action_search" >
+    
+    <ImageButton
+        android:id="@+id/action_bar_button_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/action_bar_image_button_content_description"
+        android:src="@drawable/ic_launcher" />
+
+</com.itoxygen.publicsafety.ActionBar>
