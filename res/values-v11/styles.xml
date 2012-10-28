@@ -1,5 +1,9 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="AppTheme" parent="android:Theme.Holo.Light" />
+    
+    <style name="Theme.CustomActionBar" parent="android:style/Theme.Holo.Light">
+		<item name="android:background">@drawable/ic_action_search</item>
+    </style>
 
 </resources>

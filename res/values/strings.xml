@@ -2,5 +2,10 @@
 
     <string name="app_name">PublicSafety</string>
     <string name="menu_settings">Settings</string>
+<<<<<<< HEAD
+=======
+    <string name="title_activity_main">MainActivity</string>
+    <string name="action_bar_image_button_content_description">Go up one directory</string>
+>>>>>>> 85dabc7c1d0572784e9057202ebe78b188176eb3
 
 </resources>
