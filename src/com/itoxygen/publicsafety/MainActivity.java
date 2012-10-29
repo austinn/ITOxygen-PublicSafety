@@ -151,6 +151,28 @@ public class MainActivity extends Activity {
 		}
 
 	}
+	
+	public void goToParent(View v) {
+		File file = new File(path.get(v.getId()));
+		if (file.isDirectory()) {
+			if(file.canRead()){
+				getDir(path.get(v.getId()));
+				if(isSorted) {
+					Collections.sort(item);
+					Collections.sort(path);
+				}
+				populate();
+			}
+			else{ 
+				new AlertDialog.Builder(MainActivity.this)
+				.setIcon(R.drawable.ic_launcher)
+				.setTitle("[" + file.getName() + "] folder can't be read!")
+				.setPositiveButton("OK", null).show(); 
+			}	
+		} else {
+			//this should not happen
+		}
+	}
 
 	/**
 	 * Helper method that sets up all the buttons
