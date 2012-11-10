@@ -32,6 +32,7 @@ public class MainActivityList extends ListActivity {
 	private ImageButton switchView, sortAlpha;
 	boolean isSorted = false;
 	private Spinner historySpinner;
+	private ListView list;
 	// Access the default SharedPreferences
 	SharedPreferences preferences;
 
@@ -39,6 +40,7 @@ public class MainActivityList extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_list);
+		list = (ListView)findViewById(R.id.list);
 		historySpinner = (Spinner)findViewById(R.id.historySpinner);
 		sortAlpha = (ImageButton)findViewById(R.id.sortAlpha);
 		sortAlpha.setBackgroundColor(Color.GRAY);

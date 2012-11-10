@@ -1,69 +1,12 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-	   
-    <RelativeLayout
-        android:id="@+id/activity_main_layout_action_bar"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
-        
-		<ImageButton
-		    android:id="@+id/activity_main_button_up"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:src="@drawable/g5756"
-		    android:contentDescription="@string/activity_main_up_button" />
-		
-	
-		  
-	    <Spinner
-	        android:id="@+id/historySpinner"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_toRightOf="@+id/activity_main_button_up"
-	        android:layout_toLeftOf="@+id/switchView" />
-	
-	
-	    <ImageButton
-	        android:id="@+id/switchView"
-	        android:layout_width="75dp"
-	        android:layout_height="75dp"
-	        android:layout_toLeftOf="@+id/sortAlpha"
-	        android:contentDescription="@string/activity_main_sort_by_size"
-	        android:src="@android:drawable/ic_menu_sort_by_size" />
-	
-	    <ImageButton
-	        android:id="@+id/sortAlpha"
-	        android:layout_width="75dp"
-	        android:layout_height="75dp"
-	        android:layout_alignTop="@+id/historySpinner"
-	        android:layout_toLeftOf="@+id/activity_main_app_image"
-	        android:contentDescription="@string/activity_main_sort_alphabetically"
-	        android:src="@android:drawable/ic_menu_sort_alphabetically" />
-	    
-	   	<ImageView
-		    android:id="@+id/activity_main_app_image"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:layout_alignParentRight="true"
-		    android:src="@drawable/ic_launcher"
-		    android:contentDescription="@string/activity_main_application_image" />
-	</RelativeLayout>
-    
-    <ScrollView
-        android:id="@+id/scrollView1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@+id/activity_main_layout_action_bar" >
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
-        <LinearLayout
-            android:id="@+id/lin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-        </LinearLayout>
-    </ScrollView>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/threepageviewer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-</RelativeLayout>
+</LinearLayout>
