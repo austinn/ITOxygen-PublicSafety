@@ -36,6 +36,7 @@ public class Main extends Activity {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		this.getApplication().setTheme(R.style.LightTheme);
 		setContentView(R.layout.activity_main);
 
 		root = Environment.getExternalStorageDirectory().getPath(); //gets the root path of SD card
@@ -80,13 +81,9 @@ public class Main extends Activity {
 		
 	}
 
-
-	///////////////////////////////////////////////////ALARM STUFF//////////////////////////////////////////////////////////////
 	public void populateList(View v) {		
 		list.setAdapter(listAdapter);
 	}
-
-	///////////////////////////////////////////////////END ALARM STUFF/////////////////////////////////////////////////////////////////
 
 	////////////////////////////////////////SWIPE NAVIGATION STUFF///////////////////////////////////////////////////////////////
 	/**
