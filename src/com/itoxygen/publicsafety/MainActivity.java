@@ -110,8 +110,8 @@ public class MainActivity extends Activity {
 			else {
 				getDir(history.get(history.size()-1).toString());
 			}					
-			Collections.sort(item); //sorts the filenames
-			Collections.sort(path); //sorts the spinner
+			Collections.sort(item, String.CASE_INSENSITIVE_ORDER); //sorts the filenames
+			Collections.sort(path, String.CASE_INSENSITIVE_ORDER); //sorts the spinner
 			sortAlpha.setBackgroundColor(Color.DKGRAY);
 			isSorted = true; //global boolean
 		}
@@ -158,8 +158,8 @@ public class MainActivity extends Activity {
 			if(file.canRead()){
 				getDir(path.get(v.getId()));
 				if(isSorted) {
-					Collections.sort(item);
-					Collections.sort(path);
+					Collections.sort(item, String.CASE_INSENSITIVE_ORDER);
+					Collections.sort(path, String.CASE_INSENSITIVE_ORDER);
 				}
 				populate();
 			}
@@ -195,6 +195,7 @@ public class MainActivity extends Activity {
 					tv.setBackgroundDrawable(null);
 					btnTag.setText(item.get(j + (i * 6)));
 					btnTag.setTextSize(14);
+					btnTag.setGravity(0);
 					btnTag.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 					btnTag.setHeight(150);
 					btnTag.setWidth(150);
@@ -227,8 +228,8 @@ public class MainActivity extends Activity {
 				if(file.canRead()){
 					getDir(path.get(v.getId()));
 					if(isSorted) {
-						Collections.sort(item);
-						Collections.sort(path);
+						Collections.sort(item, String.CASE_INSENSITIVE_ORDER);
+						Collections.sort(path, String.CASE_INSENSITIVE_ORDER);
 					}
 					populate();
 				}

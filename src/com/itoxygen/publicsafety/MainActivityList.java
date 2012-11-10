@@ -91,8 +91,8 @@ public class MainActivityList extends ListActivity {
 			else {
 				getDir(history.get(history.size()-1).toString());
 			}					
-			Collections.sort(item);
-			Collections.sort(path);
+			Collections.sort(item, String.CASE_INSENSITIVE_ORDER);
+			Collections.sort(path, String.CASE_INSENSITIVE_ORDER);
 			sortAlpha.setBackgroundColor(Color.DKGRAY);
 			isSorted = false;
 		}
