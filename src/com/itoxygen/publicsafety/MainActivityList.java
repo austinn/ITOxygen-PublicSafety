@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Intent;
@@ -23,16 +24,16 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 
-public class MainActivityList extends ListActivity {
+public class MainActivityList extends Activity {
 
-	private List<String> item = null;
-	private List<String> path = null;
-	private String root;
-	private List<String> history = new ArrayList<String>(); //list of previously clicked on file paths 
-	private ImageButton switchView, sortAlpha;
+	public List<String> item = null;
+	public List<String> path = null;
+	public String root;
+	public List<String> history = new ArrayList<String>(); //list of previously clicked on file paths 
+	public ImageButton switchView, sortAlpha;
 	boolean isSorted = false;
-	private Spinner historySpinner;
-	private ListView list;
+	public Spinner historySpinner;
+	public ListView list;
 	// Access the default SharedPreferences
 	SharedPreferences preferences;
 
@@ -40,6 +41,7 @@ public class MainActivityList extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_list);
+		
 		list = (ListView)findViewById(R.id.list);
 		historySpinner = (Spinner)findViewById(R.id.historySpinner);
 		sortAlpha = (ImageButton)findViewById(R.id.sortAlpha);
@@ -152,10 +154,9 @@ public class MainActivityList extends ListActivity {
 	private void populate() {
 		ArrayAdapter<String> fileList =
 				new ArrayAdapter<String>(this, R.layout.row, item);
-		setListAdapter(fileList); 
+		list.setAdapter(fileList); 
 	}
 
-	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		File file = new File(path.get(position));
 		history.add(path.get(position));

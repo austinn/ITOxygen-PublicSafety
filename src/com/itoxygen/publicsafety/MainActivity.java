@@ -28,13 +28,13 @@ import android.widget.Spinner;
 
 public class MainActivity extends Activity {
 
-	private List<String> item = null; 
-	private List<String> path = null;
-	private List<String> history = new ArrayList<String>(); //list of previously clicked on file paths 
-	private Spinner historySpinner;
+	public List<String> item = null; 
+	public List<String> path = null;
+	public List<String> history = new ArrayList<String>(); //list of previously clicked on file paths 
+	public Spinner historySpinner;
 	LinearLayout layout;
-	private String root;
-	private ImageButton switchView, sortAlpha;
+	public String root;
+	public ImageButton switchView, sortAlpha;
 	boolean isSorted = false;
 	// Access the default SharedPreferences
 	SharedPreferences preferences;
@@ -48,7 +48,7 @@ public class MainActivity extends Activity {
 		// Remove the standard action bar
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         
-		setContentView(R.layout.activity_main); 
+		setContentView(R.layout.activity_main_tile); 
 		historySpinner = (Spinner)findViewById(R.id.historySpinner);
 		sortAlpha = (ImageButton)findViewById(R.id.sortAlpha);
 		sortAlpha.setBackgroundColor(Color.GRAY);
