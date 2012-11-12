@@ -26,19 +26,6 @@ public final class R {
         public static final int up_button=0x7f020007;
     }
     public static final class id {
-<<<<<<< HEAD
-        public static final int activity_main_app_image=0x7f080005;
-        public static final int activity_main_button_up=0x7f080001;
-        public static final int activity_main_layout_action_bar=0x7f080000;
-        public static final int historySpinner=0x7f080002;
-        public static final int lin=0x7f080007;
-        public static final int menu_settings=0x7f08000a;
-        public static final int path=0x7f080008;
-        public static final int rowtext=0x7f080009;
-        public static final int scrollView1=0x7f080006;
-        public static final int sortAlpha=0x7f080004;
-        public static final int switchView=0x7f080003;
-=======
         public static final int activity_main_button_up=0x7f080003;
         public static final int activity_main_layout_action_bar=0x7f080002;
         public static final int addalarm=0x7f08000d;
@@ -58,18 +45,13 @@ public final class R {
         public static final int textView1=0x7f08000e;
         public static final int textView2=0x7f08000f;
         public static final int threepageviewer=0x7f080000;
->>>>>>> 9432e9f98c4cf6970bfbd01b16982fd48c935641
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
         public static final int activity_main_list=0x7f030001;
         public static final int activity_main_tile=0x7f030002;
-<<<<<<< HEAD
-        public static final int row=0x7f030003;
-=======
         public static final int alarm=0x7f030003;
         public static final int row=0x7f030004;
->>>>>>> 9432e9f98c4cf6970bfbd01b16982fd48c935641
     }
     public static final class menu {
         public static final int activity_main=0x7f070000;
