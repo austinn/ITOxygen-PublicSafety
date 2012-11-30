@@ -31,7 +31,7 @@ public class MainActivityList extends Activity {
 	public String root;
 	public List<String> history = new ArrayList<String>(); //list of previously clicked on file paths 
 	public ImageButton switchView, sortAlpha;
-	boolean isSorted = false;
+	boolean isSorted;
 	public Spinner historySpinner;
 	public ListView list;
 	// Access the default SharedPreferences
@@ -50,7 +50,7 @@ public class MainActivityList extends Activity {
 		history.add("Clear History"); //adds a clear history "button"
 		if(root != null) { getDir(root); }
 		preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		isSorted = preferences.getBoolean("Alpha", false); //gets the boolean from SharedPrefs
+		isSorted = preferences.getBoolean("Alpha", isSorted); //gets the boolean from SharedPrefs
 		checkSort();
 		switchView = (ImageButton)findViewById(R.id.switchView);
 		switchView.setBackgroundColor(Color.GRAY);
@@ -88,28 +88,29 @@ public class MainActivityList extends Activity {
 
 	protected void checkSort() {
 		Log.d("SHARED", preferences.getBoolean("Alpha", false) + "");
-		if (isSorted) {
-			if(history.size() <= 1) {
-				getDir(root);
-			}
-			else {
-				getDir(history.get(history.size()-1).toString());
-			}					
-			Collections.sort(item, String.CASE_INSENSITIVE_ORDER);
-			Collections.sort(path, String.CASE_INSENSITIVE_ORDER);
-			sortAlpha.setBackgroundColor(Color.DKGRAY);
-			isSorted = false;
+		if(history.size() <= 1) {
+			getDir(root);
 		}
 		else {
-			if(history.size() <= 1) {
-				getDir(root);
-			}
-			else {
-				getDir(history.get(history.size()-1).toString());
-			}					
-			sortAlpha.setBackgroundColor(Color.GRAY);
-			isSorted = true;
+			getDir(history.get(history.size()-1).toString());
 		}
+		if (isSorted) {
+			
+			
+			Collections.sort(item, String.CASE_INSENSITIVE_ORDER); //sorts the filenames
+			Collections.sort(path, String.CASE_INSENSITIVE_ORDER); //sorts the spinner
+			sortAlpha.setBackgroundColor(Color.DKGRAY);
+			isSorted = false; //global boolean
+			
+			
+		}//Alpha
+		else {					
+			Collections.sort(item, Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER)); //sorts the filenames
+			Collections.sort(path, Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER)); //sorts the spinner
+			sortAlpha.setBackgroundColor(Color.GRAY);
+			isSorted = true; //global boolean
+		}//reverse alpha
+		
 		SharedPreferences.Editor editor = preferences.edit(); // The SharedPreferences editor - must use commit() to submit changes
 		editor.putBoolean("Alpha", isSorted); // Edit the saved preferences
 		editor.commit();
