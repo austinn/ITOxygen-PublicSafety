@@ -35,7 +35,8 @@ public class MainActivity extends Activity {
 	public Spinner historySpinner;
 	LinearLayout layout;
 	public String root;
-	public ImageButton switchView, sortAlpha;
+	public ImageButton switchView;
+	public Button sortAlpha;
 	boolean isSorted = true;
 	// Access the default SharedPreferences
 	SharedPreferences preferences;
@@ -46,24 +47,29 @@ public class MainActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		
+		
+		
 		// Remove the standard action bar
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+       // getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         
 		setContentView(R.layout.activity_main_tile); 
 		historySpinner = (Spinner)findViewById(R.id.historySpinner);
-		sortAlpha = (ImageButton)findViewById(R.id.sortAlpha);
-		sortAlpha.setBackgroundColor(Color.GRAY);
+		sortAlpha = (Button)findViewById(R.id.sortAlpha);
 		root = Environment.getExternalStorageDirectory().getPath(); //gets the root path of SD card
 		history.add("Clear History"); //adds a "button" to clear history
 		if(root != null) { getDir(root); } 
 		preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		isSorted = preferences.getBoolean("Alpha", isSorted); //gets the boolean from SharedPrefs
 		checkSort();
+		isSorted = preferences.getBoolean("Alpha", true); //gets the boolean from SharedPrefs, sets to true if no boolean found
+
+
+		
+		
 		switchView = (ImageButton)findViewById(R.id.switchView);
 		switchView.setBackgroundColor(Color.GRAY);
 		
 
-        
+        //switches from tile view to list view
 		switchView.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
 				Intent intent = new Intent(getApplicationContext(), MainActivityList.class);
@@ -72,6 +78,7 @@ public class MainActivity extends Activity {
 			}	
 		});
 
+		//switches between ascending and descending sort
 		sortAlpha.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
 				checkSort();
@@ -92,29 +99,39 @@ public class MainActivity extends Activity {
 
 	}
 
+	/*
+	 * Does the ascending and descending sorting and
+	 * changes the color of the button/text
+	 */
 	protected void checkSort() {
+		
 		if(history.size() <= 1) {
 			getDir(root);
 		}
 		else {
 			getDir(history.get(history.size()-1).toString());
 		}
+		
 		if (isSorted) {
-			
-			
+			//Alpha Sort
 			Collections.sort(item, String.CASE_INSENSITIVE_ORDER); //sorts the filenames
 			Collections.sort(path, String.CASE_INSENSITIVE_ORDER); //sorts the spinner
-			sortAlpha.setBackgroundColor(Color.DKGRAY);
+			sortAlpha.setText("A > Z");
+			sortAlpha.setBackgroundColor(Color.BLACK);
+			sortAlpha.setTextColor(Color.YELLOW);
 			isSorted = false; //global boolean
 			
 			
-		}//Alpha
-		else {					
+		}
+		else {	
+			//Reverse Alpha Sort
 			Collections.sort(item, Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER)); //sorts the filenames
 			Collections.sort(path, Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER)); //sorts the spinner
-			sortAlpha.setBackgroundColor(Color.GRAY);
+			sortAlpha.setBackgroundColor(Color.YELLOW);
+			sortAlpha.setText("Z > A");
+			sortAlpha.setTextColor(Color.BLACK);
 			isSorted = true; //global boolean
-		}//reverse alpha
+		}
 		
 		SharedPreferences.Editor editor = preferences.edit(); // The SharedPreferences editor - must use commit() to submit changes
 		editor.putBoolean("Alpha", isSorted); // Edit the saved preferences
@@ -149,9 +166,9 @@ public class MainActivity extends Activity {
 					item.add(file.getName()); //if the item is a file
 				}
 			}	
-		}
+		}//end for loop
 
-	}
+	}//end of get Dir method
 	
 	public void goToParent(View v) {
 		File file = new File(path.get(v.getId()));
@@ -180,10 +197,10 @@ public class MainActivity extends Activity {
 	 * Creates 5 rows
 	 */
 	private void populate() {
-
+		
 		layout = (LinearLayout) findViewById(R.id.lin);
 		layout.removeAllViews();
-		for (int i = 0; i < 5; i++) { //Columns
+		for (int i = 0; i < 6; i++) { //Columns
 			LinearLayout row = new LinearLayout(this);
 			row.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 			Button btnTag = null;
@@ -222,7 +239,7 @@ public class MainActivity extends Activity {
 	 */
 	class ClickListener implements OnClickListener {
 		public void onClick(View v) {
-			Log.v("Click Occurs", "This is a click");
+			//Log.v("Click Occurs", "This is a click");
 			File file = new File(path.get(v.getId()));
 			history.add(path.get(v.getId()));
 			if (file.isDirectory()) {

@@ -31,14 +31,14 @@
             android:contentDescription="@string/activity_main_sort_by_size"
             android:src="@android:drawable/ic_menu_sort_by_size" />
 
-        <ImageButton
+        <Button
             android:id="@+id/sortAlpha"
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/switchView"
             android:contentDescription="@string/activity_main_sort_alphabetically"
-            android:src="@android:drawable/ic_menu_sort_alphabetically" />
+            android:text = "A > Z" />
 
         <TextView
             android:id="@+id/textView1"

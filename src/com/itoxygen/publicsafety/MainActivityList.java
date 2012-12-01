@@ -20,6 +20,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -30,8 +31,9 @@ public class MainActivityList extends Activity {
 	public List<String> path = null;
 	public String root;
 	public List<String> history = new ArrayList<String>(); //list of previously clicked on file paths 
-	public ImageButton switchView, sortAlpha;
-	boolean isSorted;
+	public ImageButton switchView;
+	public Button sortAlpha;
+	boolean isSorted = true;
 	public Spinner historySpinner;
 	public ListView list;
 	// Access the default SharedPreferences
@@ -41,19 +43,21 @@ public class MainActivityList extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_list);
-		
+
 		list = (ListView)findViewById(R.id.list);
 		historySpinner = (Spinner)findViewById(R.id.historySpinner);
-		sortAlpha = (ImageButton)findViewById(R.id.sortAlpha);
-		sortAlpha.setBackgroundColor(Color.GRAY);
+		sortAlpha = (Button)findViewById(R.id.sortAlpha);
+		//sortAlpha.setBackgroundColor(Color.GRAY);
 		root = Environment.getExternalStorageDirectory().getPath(); //gets the root of the SD card or Internal Storage
 		history.add("Clear History"); //adds a clear history "button"
 		if(root != null) { getDir(root); }
 		preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		isSorted = preferences.getBoolean("Alpha", isSorted); //gets the boolean from SharedPrefs
+		isSorted = preferences.getBoolean("Alpha", true); //gets the boolean from SharedPrefs, set to true if it boolean not found
 		checkSort();
 		switchView = (ImageButton)findViewById(R.id.switchView);
 		switchView.setBackgroundColor(Color.GRAY);
+
+		//when the list views button is pushed
 		switchView.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
 				Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -62,6 +66,7 @@ public class MainActivityList extends Activity {
 			}	
 		});
 
+		//when the sorting button is pressed
 		sortAlpha.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
 				checkSort();
@@ -74,8 +79,7 @@ public class MainActivityList extends Activity {
 		historySpinner.setSelection(history.size()-1);
 
 		historySpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-			public void onItemSelected(AdapterView<?> arg0, View arg1,
-					int pos, long arg3) {
+			public void onItemSelected(AdapterView<?> arg0, View arg1, int pos, long arg3) {
 				//getDir(historySpinner.getItemAtPosition(pos).toString());
 				if(historySpinner.getItemAtPosition(pos).toString().equals("Clear History")) {
 					history.clear();
@@ -86,8 +90,8 @@ public class MainActivityList extends Activity {
 		});
 	}
 
+
 	protected void checkSort() {
-		Log.d("SHARED", preferences.getBoolean("Alpha", false) + "");
 		if(history.size() <= 1) {
 			getDir(root);
 		}
@@ -95,26 +99,29 @@ public class MainActivityList extends Activity {
 			getDir(history.get(history.size()-1).toString());
 		}
 		if (isSorted) {
-			
-			
+			//Alphabetical Sort
 			Collections.sort(item, String.CASE_INSENSITIVE_ORDER); //sorts the filenames
 			Collections.sort(path, String.CASE_INSENSITIVE_ORDER); //sorts the spinner
-			sortAlpha.setBackgroundColor(Color.DKGRAY);
+			sortAlpha.setText("A > Z");
+			sortAlpha.setBackgroundColor(Color.BLACK);
+			sortAlpha.setTextColor(Color.YELLOW);
 			isSorted = false; //global boolean
-			
-			
-		}//Alpha
-		else {					
+		}
+		else {	
+			//Reverse Alpha Sort
 			Collections.sort(item, Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER)); //sorts the filenames
 			Collections.sort(path, Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER)); //sorts the spinner
-			sortAlpha.setBackgroundColor(Color.GRAY);
+			sortAlpha.setBackgroundColor(Color.YELLOW);
+			sortAlpha.setText("Z > A");
+			sortAlpha.setTextColor(Color.BLACK);
 			isSorted = true; //global boolean
-		}//reverse alpha
-		
+		}
+
+		populate();
 		SharedPreferences.Editor editor = preferences.edit(); // The SharedPreferences editor - must use commit() to submit changes
 		editor.putBoolean("Alpha", isSorted); // Edit the saved preferences
 		editor.commit();
-		populate();
+
 	}
 
 	private void getDir(String dirPath)
@@ -164,6 +171,7 @@ public class MainActivityList extends Activity {
 		if (file.isDirectory())
 		{ 
 			if(file.canRead()){
+
 				getDir(path.get(position));
 			} else{
 				new AlertDialog.Builder(this)
