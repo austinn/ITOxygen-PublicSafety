@@ -117,11 +117,11 @@ public class MainActivityList extends Activity {
 			isSorted = true; //global boolean
 		}
 
-		populate();
-		SharedPreferences.Editor editor = preferences.edit(); // The SharedPreferences editor - must use commit() to submit changes
-		editor.putBoolean("Alpha", isSorted); // Edit the saved preferences
-		editor.commit();
 
+		SharedPreferences.Editor editor = preferences.edit(); // The SharedPreferences editor - must use commit() to submit changes
+		editor.putBoolean("Alpha", !isSorted); // Edit the saved preferences
+		editor.commit();
+		populate();
 	}
 
 	private void getDir(String dirPath)
