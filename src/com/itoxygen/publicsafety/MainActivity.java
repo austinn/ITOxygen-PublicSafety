@@ -52,10 +52,8 @@ public class MainActivity extends Activity {
 
 		root = Environment.getExternalStorageDirectory().getPath(); //gets the root path of SD card
 		history.add("Clear History"); //adds a "button" to clear history
-		Log.d("Before loading sharedPrefs: isSorted = ", isSorted + "");
 		loadSharedPrefs();
 		if(root != null) { getDir(root); } 
-		Log.d("After loading sharedPrefs: isSorted = ", isSorted + "");		
 		checkSort();
 
 		//switches from tile view to list view
@@ -71,11 +69,9 @@ public class MainActivity extends Activity {
 		sortAlpha.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
 				if(isSorted) {
-					
 					isSorted = false; //global boolean
 				}
 				else {
-					
 					isSorted = true; //global boolean
 				}
 				saveSharedPrefs("Alpha");
