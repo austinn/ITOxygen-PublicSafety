@@ -6,7 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 
-public class Shared extends Activity {
+public class Shared {
 	public static void openPdf(File file, Activity activity) {
 		Uri targetUri = Uri.fromFile(file);
 		

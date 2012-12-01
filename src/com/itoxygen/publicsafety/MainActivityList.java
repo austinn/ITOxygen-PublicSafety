@@ -16,6 +16,8 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -42,12 +44,13 @@ public class MainActivityList extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_main_list);
-
+		
 		list = (ListView)findViewById(R.id.list);
 		historySpinner = (Spinner)findViewById(R.id.historySpinner);
 		sortAlpha = (Button)findViewById(R.id.sortAlpha);
-		//sortAlpha.setBackgroundColor(Color.GRAY);
 		root = Environment.getExternalStorageDirectory().getPath(); //gets the root of the SD card or Internal Storage
 		history.add("Clear History"); //adds a clear history "button"
 		if(root != null) { getDir(root); }
@@ -171,7 +174,6 @@ public class MainActivityList extends Activity {
 		if (file.isDirectory())
 		{ 
 			if(file.canRead()){
-
 				getDir(path.get(position));
 			} else{
 				new AlertDialog.Builder(this)

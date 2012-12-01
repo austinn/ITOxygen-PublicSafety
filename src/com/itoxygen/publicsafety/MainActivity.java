@@ -28,7 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 public class MainActivity extends Activity {
-
+	public static final String PREFS_NAME = "MyPrefsFile";
 	public List<String> item = null; 
 	public List<String> path = null;
 	public List<String> history = new ArrayList<String>(); //list of previously clicked on file paths 
@@ -37,39 +37,28 @@ public class MainActivity extends Activity {
 	public String root;
 	public ImageButton switchView;
 	public Button sortAlpha;
-	// Access the default SharedPreferences
-	SharedPreferences preferences;
-	boolean isSorted = true;
-	//boolean isSorted = preferences.getBoolean("Alpha", true); //gets the boolean from SharedPrefs, sets to true if no boolean found
-	
-	
-
+	boolean isSorted;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		//requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
-		
-		
-		
-		// Remove the standard action bar
-       // getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        
-		setContentView(R.layout.activity_main_tile); 
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		setContentView(R.layout.activity_main_tile);
+
 		historySpinner = (Spinner)findViewById(R.id.historySpinner);
 		sortAlpha = (Button)findViewById(R.id.sortAlpha);
+		switchView = (ImageButton)findViewById(R.id.switchView);
+
 		root = Environment.getExternalStorageDirectory().getPath(); //gets the root path of SD card
 		history.add("Clear History"); //adds a "button" to clear history
+		Log.d("Before loading sharedPrefs: isSorted = ", isSorted + "");
+		loadSharedPrefs();
 		if(root != null) { getDir(root); } 
-		preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		Log.d("After loading sharedPrefs: isSorted = ", isSorted + "");		
 		checkSort();
-		isSorted = preferences.getBoolean("Alpha", true); //gets the boolean from SharedPrefs, sets to true if no boolean found
-		
-		switchView = (ImageButton)findViewById(R.id.switchView);
-		switchView.setBackgroundColor(Color.GRAY);
-		
 
-        //switches from tile view to list view
+		//switches from tile view to list view
 		switchView.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
 				Intent intent = new Intent(getApplicationContext(), MainActivityList.class);
@@ -81,6 +70,15 @@ public class MainActivity extends Activity {
 		//switches between ascending and descending sort
 		sortAlpha.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
+				if(isSorted) {
+					
+					isSorted = false; //global boolean
+				}
+				else {
+					
+					isSorted = true; //global boolean
+				}
+				saveSharedPrefs("Alpha");
 				checkSort();
 			}	
 		});
@@ -99,19 +97,19 @@ public class MainActivity extends Activity {
 
 	}
 
-	/*
+	/**
 	 * Does the ascending and descending sorting and
 	 * changes the color of the button/text
 	 */
 	protected void checkSort() {
-		
+
 		if(history.size() <= 1) {
 			getDir(root);
 		}
 		else {
 			getDir(history.get(history.size()-1).toString());
 		}
-		
+
 		if (isSorted) {
 			//Alpha Sort
 			Collections.sort(item, String.CASE_INSENSITIVE_ORDER); //sorts the filenames
@@ -119,9 +117,6 @@ public class MainActivity extends Activity {
 			sortAlpha.setText("A > Z");
 			sortAlpha.setBackgroundColor(Color.BLACK);
 			sortAlpha.setTextColor(Color.YELLOW);
-			isSorted = false; //global boolean
-			
-			
 		}
 		else {	
 			//Reverse Alpha Sort
@@ -130,14 +125,30 @@ public class MainActivity extends Activity {
 			sortAlpha.setBackgroundColor(Color.YELLOW);
 			sortAlpha.setText("Z > A");
 			sortAlpha.setTextColor(Color.BLACK);
-			isSorted = true; //global boolean
 		}
-	
-		SharedPreferences.Editor editor = preferences.edit(); // The SharedPreferences editor - must use commit() to submit changes
-		editor.putBoolean("Alpha", !isSorted); // Edit the saved preferences
-		editor.commit();
+
 		populate(); //puts buttons on screen
 	}
+
+	/**
+	 * Saves SharedPreferences
+	 * @param name - name of the key in sharedPrefs
+	 */
+	public void saveSharedPrefs(String name) {
+		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putBoolean(name, isSorted);
+		editor.commit();
+	}
+
+	/**
+	 * Loads from SharedPreferences
+	 */
+	public void loadSharedPrefs() {
+		SharedPreferences loadPrefs = getSharedPreferences(PREFS_NAME, 0);
+		isSorted = loadPrefs.getBoolean("Alpha", true);
+	}
+
 
 	/**
 	 * Method that gets the directory of the given path
@@ -169,7 +180,7 @@ public class MainActivity extends Activity {
 		}//end for loop
 
 	}//end of get Dir method
-	
+
 	public void goToParent(View v) {
 		File file = new File(path.get(v.getId()));
 		if (file.isDirectory()) {
@@ -197,7 +208,7 @@ public class MainActivity extends Activity {
 	 * Creates 5 rows
 	 */
 	private void populate() {
-		
+
 		layout = (LinearLayout) findViewById(R.id.lin);
 		layout.removeAllViews();
 		for (int i = 0; i < 6; i++) { //Columns
@@ -268,7 +279,7 @@ public class MainActivity extends Activity {
 			}
 		}
 	}
-	
+
 
 }
 
