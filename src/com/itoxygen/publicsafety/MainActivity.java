@@ -37,14 +37,17 @@ public class MainActivity extends Activity {
 	public String root;
 	public ImageButton switchView;
 	public Button sortAlpha;
-	boolean isSorted = true;
 	// Access the default SharedPreferences
 	SharedPreferences preferences;
+	boolean isSorted = true;
+	//boolean isSorted = preferences.getBoolean("Alpha", true); //gets the boolean from SharedPrefs, sets to true if no boolean found
+	
+	
 
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		//requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		
 		
@@ -61,9 +64,6 @@ public class MainActivity extends Activity {
 		preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		checkSort();
 		isSorted = preferences.getBoolean("Alpha", true); //gets the boolean from SharedPrefs, sets to true if no boolean found
-
-
-		
 		
 		switchView = (ImageButton)findViewById(R.id.switchView);
 		switchView.setBackgroundColor(Color.GRAY);
@@ -132,9 +132,9 @@ public class MainActivity extends Activity {
 			sortAlpha.setTextColor(Color.BLACK);
 			isSorted = true; //global boolean
 		}
-		
+	
 		SharedPreferences.Editor editor = preferences.edit(); // The SharedPreferences editor - must use commit() to submit changes
-		editor.putBoolean("Alpha", isSorted); // Edit the saved preferences
+		editor.putBoolean("Alpha", !isSorted); // Edit the saved preferences
 		editor.commit();
 		populate(); //puts buttons on screen
 	}
