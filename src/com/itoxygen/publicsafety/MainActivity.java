@@ -16,6 +16,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -272,7 +273,7 @@ public class MainActivity extends Activity {
 					btn.setBackgroundDrawable(null);
 					btn.setText(item.get(j+(i*columNum)));
 					btn.setTextSize(14);
-					btn.setGravity(0);
+					btn.setGravity(Gravity.CENTER);
 					btn.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 					btn.setWidth(width/columNum);
 					btn.setId(j + (i * columNum));
