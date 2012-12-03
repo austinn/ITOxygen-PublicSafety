@@ -263,8 +263,8 @@ public class MainActivity extends Activity {
 					
 					imgBtn.setBackgroundDrawable(null);
 					imgBtn.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-					imgBtn.setMaxWidth(width/columNum);
-					imgBtn.setMaxHeight(width/columNum);
+					imgBtn.setMinimumWidth(width/columNum);
+					imgBtn.setMinimumHeight(width/columNum);
 					imgBtn.setId(j + (i * columNum));
 					imgBtn.setOnClickListener(new ClickListener());
 
