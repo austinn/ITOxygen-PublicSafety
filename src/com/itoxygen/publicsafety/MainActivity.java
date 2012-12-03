@@ -226,12 +226,14 @@ public class MainActivity extends Activity {
 		
 		
 		
-		 
+		/* 
 		if(rotation == 0 || rotation == 180){
 			columNum = 4;
 		}else{
-			columNum = 8;
+			columNum = 7;
 		}
+		*/
+		columNum = width/180;
 		
 		int rowNum = item.size()/columNum;
 		
@@ -240,8 +242,8 @@ public class MainActivity extends Activity {
 		
 		
 		Log.e(root, "Item Size: "+item.size()+"");
-		Log.e(root, "columNum: "+columNum+"");
-		Log.e(root, "rowNum: "+rowNum+"");
+		Log.e(root, "width: "+width+"");
+		Log.e(root, "height: "+height+"");
 
 
 		for(int i = 0; i < rowNum; i++){		
