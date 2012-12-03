@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -39,6 +40,11 @@ public class MainActivity extends Activity {
 	public Button sortAlpha;
 	boolean isSorted;
 
+	//screen
+	int width,height;
+	Display display;
+	
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -46,6 +52,13 @@ public class MainActivity extends Activity {
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_main_tile);
 
+		//screen
+		display = getWindowManager().getDefaultDisplay();
+		
+		width = display.getWidth();
+		height = display.getHeight();
+		
+		
 		historySpinner = (Spinner)findViewById(R.id.historySpinner);
 		sortAlpha = (Button)findViewById(R.id.sortAlpha);
 		switchView = (ImageButton)findViewById(R.id.switchView);
@@ -207,30 +220,71 @@ public class MainActivity extends Activity {
 
 		layout = (LinearLayout) findViewById(R.id.lin);
 		layout.removeAllViews();
-		for (int i = 0; i < 6; i++) { //Columns
-			LinearLayout row = new LinearLayout(this);
-			row.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-			Button btnTag = null;
-			Button tv = null;
-			for (int j = 0; j < 6; j++) { 
-				if(j+(i*6) < item.size()) {
-					btnTag = new Button(this);
-					tv = new Button(this);
-					tv.setText("");
-					tv.setBackgroundDrawable(null);
-					btnTag.setText(item.get(j + (i * 6)));
-					btnTag.setTextSize(14);
-					btnTag.setGravity(0);
-					btnTag.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-					btnTag.setHeight(150);
-					btnTag.setWidth(150);
-					btnTag.setId(j + (i * 6));
-					btnTag.setOnClickListener(new ClickListener());
-					row.addView(btnTag);
+		
+		int rotation = display.getRotation();
+		int columNum = 0;
+		
+		
+		
+		 
+		if(rotation == 0 || rotation == 180){
+			columNum = 4;
+		}else{
+			columNum = 8;
+		}
+		
+		int rowNum = item.size()/columNum;
+		
+		if(item.size()%columNum != 0)
+			rowNum++;
+		
+		
+		Log.e(root, "Item Size: "+item.size()+"");
+		Log.e(root, "columNum: "+columNum+"");
+		Log.e(root, "rowNum: "+rowNum+"");
+
+
+		for(int i = 0; i < rowNum; i++){		
+			LinearLayout imgRow = new LinearLayout(getApplicationContext());
+			imgRow.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+			LinearLayout textRow = new LinearLayout(getApplicationContext());
+			imgRow.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+			for(int j = 0; j < columNum; j++){
+				
+				if(j+(i*columNum) < item.size()){
+					
+					ImageButton imgBtn = new ImageButton(this);
+					
+					
+					imgBtn.setImageResource(R.drawable.psafety_folder);
+					
+					
+					imgBtn.setBackgroundDrawable(null);
+					imgBtn.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+					imgBtn.setMaxWidth(width/columNum);
+					imgBtn.setMaxHeight(width/columNum);
+					imgBtn.setId(j + (i * columNum));
+					imgBtn.setOnClickListener(new ClickListener());
+
+					Button btn = new Button(this);
+					btn.setBackgroundDrawable(null);
+					btn.setText(item.get(j+(i*columNum)));
+					btn.setTextSize(14);
+					btn.setGravity(0);
+					btn.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+					btn.setWidth(width/columNum);
+					btn.setId(j + (i * columNum));
+					btn.setOnClickListener(new ClickListener());
+					
+					imgRow.addView(imgBtn);
+					textRow.addView(btn);
+					
 				}
-				else { }
+				
 			}
-			layout.addView(row);
+			
+			layout.addView(imgRow);
+			layout.addView(textRow);
 		}
 
 		ArrayAdapter<String> historyList =
