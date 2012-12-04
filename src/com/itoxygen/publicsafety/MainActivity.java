@@ -13,9 +13,9 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -27,6 +27,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
 	public static final String PREFS_NAME = "MyPrefsFile";
@@ -38,27 +39,24 @@ public class MainActivity extends Activity {
 	public String root;
 	public ImageButton switchView;
 	public Button sortAlpha;
-	boolean isSorted;
+	boolean isSorted, isTile;
 
 	//screen
 	int width,height;
 	Display display;
-	
-	
+
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_main_tile);
-
 		//screen
 		display = getWindowManager().getDefaultDisplay();
-		
 		width = display.getWidth();
 		height = display.getHeight();
-		
-		
+
 		historySpinner = (Spinner)findViewById(R.id.historySpinner);
 		sortAlpha = (Button)findViewById(R.id.sortAlpha);
 		switchView = (ImageButton)findViewById(R.id.switchView);
@@ -66,12 +64,24 @@ public class MainActivity extends Activity {
 		root = Environment.getExternalStorageDirectory().getPath(); //gets the root path of SD card
 		history.add("Clear History"); //adds a "button" to clear history
 		loadSharedPrefs();
+		Log.v("Tile", isTile+"");
+		if(!isTile) {
+			saveSharedPrefs("Activity");
+			Intent intent = new Intent(getApplicationContext(), MainActivityList.class);
+			finish();
+			startActivity(intent);
+		}
+		else {
+			isTile = true;
+		}
 		if(root != null) { getDir(root); } 
 		checkSort();
 
 		//switches from tile view to list view
 		switchView.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
+				isTile = false;
+				saveSharedPrefs("Activity");
 				Intent intent = new Intent(getApplicationContext(), MainActivityList.class);
 				finish();
 				startActivity(intent);
@@ -147,6 +157,7 @@ public class MainActivity extends Activity {
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putBoolean(name, isSorted);
+		editor.putBoolean(name, isTile);
 		editor.commit();
 	}
 
@@ -156,6 +167,7 @@ public class MainActivity extends Activity {
 	public void loadSharedPrefs() {
 		SharedPreferences loadPrefs = getSharedPreferences(PREFS_NAME, 0);
 		isSorted = loadPrefs.getBoolean("Alpha", true);
+		isTile = loadPrefs.getBoolean("Activity", false);
 	}
 
 
@@ -220,27 +232,27 @@ public class MainActivity extends Activity {
 
 		layout = (LinearLayout) findViewById(R.id.lin);
 		layout.removeAllViews();
-		
+
 		int rotation = display.getRotation();
 		int columNum = 0;
-		
-		
-		
+
+
+
 		/* 
 		if(rotation == 0 || rotation == 180){
 			columNum = 4;
 		}else{
 			columNum = 7;
 		}
-		*/
+		 */
 		columNum = width/180;
-		
+
 		int rowNum = item.size()/columNum;
-		
+
 		if(item.size()%columNum != 0)
 			rowNum++;
-		
-		
+
+
 		Log.e(root, "Item Size: "+item.size()+"");
 		Log.e(root, "width: "+width+"");
 		Log.e(root, "height: "+height+"");
@@ -250,41 +262,39 @@ public class MainActivity extends Activity {
 			LinearLayout imgRow = new LinearLayout(getApplicationContext());
 			imgRow.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 			LinearLayout textRow = new LinearLayout(getApplicationContext());
-			imgRow.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+			textRow.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 			for(int j = 0; j < columNum; j++){
-				
+
 				if(j+(i*columNum) < item.size()){
-					
+
 					ImageButton imgBtn = new ImageButton(this);
-					
-					
+
+
 					imgBtn.setImageResource(R.drawable.psafety_folder);
-					
-					
+
+
 					imgBtn.setBackgroundDrawable(null);
 					imgBtn.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 					imgBtn.setMinimumWidth(width/columNum);
 					imgBtn.setMinimumHeight(width/columNum);
 					imgBtn.setId(j + (i * columNum));
 					imgBtn.setOnClickListener(new ClickListener());
-
-					Button btn = new Button(this);
-					btn.setBackgroundDrawable(null);
+					TextView btn = new TextView(this);
 					btn.setText(item.get(j+(i*columNum)));
 					btn.setTextSize(14);
-					btn.setGravity(0);
+					btn.setGravity(Gravity.CENTER_HORIZONTAL);
 					btn.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 					btn.setWidth(width/columNum);
 					btn.setId(j + (i * columNum));
 					btn.setOnClickListener(new ClickListener());
-					
+
 					imgRow.addView(imgBtn);
 					textRow.addView(btn);
-					
+
 				}
-				
+
 			}
-			
+
 			layout.addView(imgRow);
 			layout.addView(textRow);
 		}

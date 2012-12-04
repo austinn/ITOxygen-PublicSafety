@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -32,7 +33,7 @@ public class MainActivityList extends Activity {
 	public List<String> history = new ArrayList<String>(); //list of previously clicked on file paths 
 	public ImageButton switchView;
 	public Button sortAlpha;
-	boolean isSorted = true;
+	boolean isSorted, isTile;
 	public Spinner historySpinner;
 	public ListView list;
 
@@ -42,13 +43,15 @@ public class MainActivityList extends Activity {
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_main_list);
-
+		
 		list = (ListView)findViewById(R.id.list);
 		historySpinner = (Spinner)findViewById(R.id.historySpinner);
 		sortAlpha = (Button)findViewById(R.id.sortAlpha);
 		switchView = (ImageButton)findViewById(R.id.switchView);
 		switchView.setBackgroundColor(Color.GRAY);
 		loadSharedPrefs();
+		Log.v("Tile", isTile+"");
+		isTile = false;
 		root = Environment.getExternalStorageDirectory().getPath(); //gets the root of the SD card or Internal Storage
 		history.add("Clear History"); //adds a clear history "button"
 		if(root != null) { getDir(root); }
@@ -58,6 +61,8 @@ public class MainActivityList extends Activity {
 		//when the list views button is pushed
 		switchView.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
+				isTile = true;
+				saveSharedPrefs("Activity");
 				Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 				finish();
 				startActivity(intent);
@@ -158,6 +163,7 @@ public class MainActivityList extends Activity {
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putBoolean(name, isSorted);
+		editor.putBoolean(name, isTile);
 		editor.commit();
 	}
 
@@ -167,6 +173,7 @@ public class MainActivityList extends Activity {
 	public void loadSharedPrefs() {
 		SharedPreferences loadPrefs = getSharedPreferences(PREFS_NAME, 0);
 		isSorted = loadPrefs.getBoolean("Alpha", true);
+		isTile = loadPrefs.getBoolean("Activity", true);
 	}
 
 	private void getDir(String dirPath)
