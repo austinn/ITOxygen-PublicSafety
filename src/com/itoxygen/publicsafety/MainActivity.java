@@ -37,9 +37,9 @@ public class MainActivity extends Activity {
 	//public Spinner historySpinner;
 	LinearLayout layout;
 	public String root;
-	public ImageButton switchView,history_Button,up_Dir;
+	public ImageButton switchView,history_Button,up_Dir,root_Button;
 	public Button sortAlpha;
-	boolean isSorted, isTile;
+	boolean isSorted, isTile, isHistory;
 
 	//screen
 	int width,height;
@@ -58,15 +58,19 @@ public class MainActivity extends Activity {
 		height = display.getHeight();
 
 		//historySpinner = (Spinner)findViewById(R.id.historySpinner);
+
+		//buttons
 		sortAlpha = (Button)findViewById(R.id.sortAlpha);
 		switchView = (ImageButton)findViewById(R.id.switchView);
 		history_Button = (ImageButton)findViewById(R.id.historyButton);
 		up_Dir = (ImageButton)findViewById(R.id.up_Button);
+		root_Button=(ImageButton)findViewById(R.id.rootButton);
+
 
 		root = Environment.getExternalStorageDirectory().getPath(); //gets the root path of SD card
 		history.add("Clear History"); //adds a "button" to clear history
 		loadSharedPrefs();
-		Log.v("Tile", isTile+"");
+		
 		if(!isTile) {
 			saveSharedPrefs("Activity");
 			Intent intent = new Intent(getApplicationContext(), MainActivityList.class);
@@ -76,14 +80,27 @@ public class MainActivity extends Activity {
 		else {
 			isTile = true;
 		}
+
+
 		if(root != null) { getDir(root); } 
 		checkSort();
+
+
 
 
 		//when the up button is pressed
 		up_Dir.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
 				//go up one level
+				Log.e("root","One up button pushed");
+			}	
+		});
+
+		//when the root button is pressed
+		root_Button.setOnClickListener(new OnClickListener(){
+			public void onClick(View arg0) {
+				//populate according to history list
+				Log.e("root","Root button pushed");
 			}	
 		});
 
@@ -92,6 +109,7 @@ public class MainActivity extends Activity {
 		history_Button.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
 				//populate according to whats in the history
+				Log.e("root","History button is pushed");
 			}	
 		});
 
@@ -174,8 +192,15 @@ public class MainActivity extends Activity {
 	public void saveSharedPrefs(String name) {
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 		SharedPreferences.Editor editor = settings.edit();
-		editor.putBoolean(name, isSorted);
-		editor.putBoolean(name, isTile);
+		if (name.equals("Alpha")) {
+			editor.putBoolean(name, isSorted);
+		}
+		else if (name.equals("Activity")){
+			editor.putBoolean(name, isTile);
+		}
+		else if (name.equals("History")){
+			editor.putBoolean(name,isHistory);
+		}
 		editor.commit();
 	}
 
@@ -186,6 +211,7 @@ public class MainActivity extends Activity {
 		SharedPreferences loadPrefs = getSharedPreferences(PREFS_NAME, 0);
 		isSorted = loadPrefs.getBoolean("Alpha", true);
 		isTile = loadPrefs.getBoolean("Activity", false);
+		//isHistory = loadPrefs.getBoolean("",false);
 	}
 
 
@@ -225,6 +251,8 @@ public class MainActivity extends Activity {
 		if (file.isDirectory()) {
 			if(file.canRead()){
 				getDir(path.get(v.getId()));
+				
+				//Replace if statement with checksort?
 				if(isSorted) {
 					Collections.sort(item, String.CASE_INSENSITIVE_ORDER);
 					Collections.sort(path, String.CASE_INSENSITIVE_ORDER);
@@ -270,33 +298,23 @@ public class MainActivity extends Activity {
 		if(item.size()%columNum != 0)
 			rowNum++;
 
-
-		Log.e(root, "Item Size: "+item.size()+"");
-		Log.e(root, "width: "+width+"");
-		Log.e(root, "height: "+height+"");
-
-
 		for(int i = 0; i < rowNum; i++){		
 			LinearLayout imgRow = new LinearLayout(getApplicationContext());
 			imgRow.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 			LinearLayout textRow = new LinearLayout(getApplicationContext());
 			textRow.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+			
 			for(int j = 0; j < columNum; j++){
-
 				if(j+(i*columNum) < item.size()){
-
 					ImageButton imgBtn = new ImageButton(this);
-
-
 					imgBtn.setImageResource(R.drawable.psafety_folder);
-
-
 					imgBtn.setBackgroundDrawable(null);
 					imgBtn.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 					imgBtn.setMinimumWidth(width/columNum);
 					imgBtn.setMinimumHeight(width/columNum);
 					imgBtn.setId(j + (i * columNum));
 					imgBtn.setOnClickListener(new ClickListener());
+
 					TextView btn = new TextView(this);
 					btn.setText(item.get(j+(i*columNum)));
 					btn.setTextSize(14);
@@ -308,7 +326,6 @@ public class MainActivity extends Activity {
 
 					imgRow.addView(imgBtn);
 					textRow.addView(btn);
-
 				}
 
 			}

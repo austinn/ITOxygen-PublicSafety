@@ -57,7 +57,7 @@
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/activity_main_button_up"
+            android:layout_toLeftOf="@+id/historyButton"
             android:src="@android:drawable/ic_menu_myplaces" />
 
     </RelativeLayout>
