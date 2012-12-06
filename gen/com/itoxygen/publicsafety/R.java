@@ -44,7 +44,7 @@ public final class R {
         public static final int switchView=0x7f080003;
         public static final int textView1=0x7f080005;
         public static final int textView2=0x7f08000d;
-        public static final int up_Button=0x7f080002;
+        public static final int upButton=0x7f080002;
     }
     public static final class layout {
         public static final int activity_main_list=0x7f030000;

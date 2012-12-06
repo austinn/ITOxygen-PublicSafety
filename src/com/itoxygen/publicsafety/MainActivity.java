@@ -37,7 +37,7 @@ public class MainActivity extends Activity {
 	//public Spinner historySpinner;
 	LinearLayout layout;
 	public String root;
-	public ImageButton switchView,history_Button,up_Dir,root_Button;
+	public ImageButton switchView,historyButton,upDir,rootButton;
 	public Button sortAlpha;
 	boolean isSorted, isTile, isHistory;
 
@@ -62,9 +62,9 @@ public class MainActivity extends Activity {
 		//buttons
 		sortAlpha = (Button)findViewById(R.id.sortAlpha);
 		switchView = (ImageButton)findViewById(R.id.switchView);
-		history_Button = (ImageButton)findViewById(R.id.historyButton);
-		up_Dir = (ImageButton)findViewById(R.id.up_Button);
-		root_Button=(ImageButton)findViewById(R.id.rootButton);
+		historyButton = (ImageButton)findViewById(R.id.historyButton);
+		upDir = (ImageButton)findViewById(R.id.upButton);
+		rootButton=(ImageButton)findViewById(R.id.rootButton);
 
 
 		root = Environment.getExternalStorageDirectory().getPath(); //gets the root path of SD card
@@ -88,7 +88,7 @@ public class MainActivity extends Activity {
 		
 		//button calls
 		//when the up button is pressed
-		up_Dir.setOnClickListener(new OnClickListener(){
+		upDir.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
 				//go up one level
 				Log.e("root","One up button pushed");
@@ -96,7 +96,7 @@ public class MainActivity extends Activity {
 		});
 
 		//when the root button is pressed
-		root_Button.setOnClickListener(new OnClickListener(){
+		rootButton.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
 				//populate according to history list
 				Log.e("root","Root button pushed");
@@ -105,7 +105,7 @@ public class MainActivity extends Activity {
 
 
 		//when the history button is pressed
-		history_Button.setOnClickListener(new OnClickListener(){
+		historyButton.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
 				//populate according to whats in the history
 				Log.e("root","History button is pushed");
