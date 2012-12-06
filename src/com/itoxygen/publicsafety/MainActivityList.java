@@ -31,9 +31,9 @@ public class MainActivityList extends Activity {
 	public List<String> path = null;
 	public String root;
 	public List<String> history = new ArrayList<String>(); //list of previously clicked on file paths 
-	public ImageButton switchView,history_Button,up_Dir;
+	public ImageButton switchView,history_Button,up_Dir,root_Button;
 	public Button sortAlpha;
-	boolean isSorted, isTile;
+	boolean isSorted, isTile,isHistory;
 	//public Spinner historySpinner;
 	public ListView list;
 
@@ -50,10 +50,10 @@ public class MainActivityList extends Activity {
 		switchView = (ImageButton)findViewById(R.id.switchView);
 		history_Button = (ImageButton)findViewById(R.id.historyButton);
 		up_Dir = (ImageButton)findViewById(R.id.up_Button);
+		root_Button=(ImageButton)findViewById(R.id.rootButton);
+
 		switchView.setBackgroundColor(Color.GRAY);
 		loadSharedPrefs();
-		Log.v("Tile", isTile+"");
-		isTile = false;
 		root = Environment.getExternalStorageDirectory().getPath(); //gets the root of the SD card or Internal Storage
 		history.add("Clear History"); //adds a clear history "button"
 		if(root != null) { getDir(root); }
@@ -64,6 +64,15 @@ public class MainActivityList extends Activity {
 		up_Dir.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
 				//go up one level
+				Log.e("root","Go up one level button pushed");
+			}	
+		});
+
+		//when the root button is pressed
+		root_Button.setOnClickListener(new OnClickListener(){
+			public void onClick(View arg0) {
+				//go up one level
+				Log.e("root","Root button pushed");
 			}	
 		});
 
@@ -72,6 +81,7 @@ public class MainActivityList extends Activity {
 		history_Button.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
 				//populate according to whats in the history
+				Log.e("root","History button pushed");
 			}	
 		});
 
@@ -137,13 +147,7 @@ public class MainActivityList extends Activity {
 				checkSort();
 			}
 		});
-
-
-
 	}
-
-
-
 
 	protected void checkSort() {
 		if(history.size() <= 1) {
@@ -169,7 +173,6 @@ public class MainActivityList extends Activity {
 			sortAlpha.setText("Z > A");
 			sortAlpha.setTextColor(Color.BLACK);
 		}
-
 		populate();
 	}
 
@@ -180,8 +183,16 @@ public class MainActivityList extends Activity {
 	public void saveSharedPrefs(String name) {
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 		SharedPreferences.Editor editor = settings.edit();
-		editor.putBoolean(name, isSorted);
-		editor.putBoolean(name, isTile);
+		if (name.equals("Alpha")) {
+			editor.putBoolean(name, isSorted);
+		}
+		else if (name.equals("Activity")){
+			editor.putBoolean(name, isTile);
+		}
+		else if (name.equals("History")){
+			editor.putBoolean(name,isHistory);
+		}
+		editor.commit();
 		editor.commit();
 	}
 
