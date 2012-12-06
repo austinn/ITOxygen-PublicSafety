@@ -34,10 +34,10 @@ public class MainActivity extends Activity {
 	public List<String> item = null; 
 	public List<String> path = null;
 	public List<String> history = new ArrayList<String>(); //list of previously clicked on file paths 
-	public Spinner historySpinner;
+	//public Spinner historySpinner;
 	LinearLayout layout;
 	public String root;
-	public ImageButton switchView;
+	public ImageButton switchView,history_Button,up_Dir;
 	public Button sortAlpha;
 	boolean isSorted, isTile;
 
@@ -57,9 +57,11 @@ public class MainActivity extends Activity {
 		width = display.getWidth();
 		height = display.getHeight();
 
-		historySpinner = (Spinner)findViewById(R.id.historySpinner);
+		//historySpinner = (Spinner)findViewById(R.id.historySpinner);
 		sortAlpha = (Button)findViewById(R.id.sortAlpha);
 		switchView = (ImageButton)findViewById(R.id.switchView);
+		history_Button = (ImageButton)findViewById(R.id.historyButton);
+		up_Dir = (ImageButton)findViewById(R.id.up_Button);
 
 		root = Environment.getExternalStorageDirectory().getPath(); //gets the root path of SD card
 		history.add("Clear History"); //adds a "button" to clear history
@@ -76,6 +78,22 @@ public class MainActivity extends Activity {
 		}
 		if(root != null) { getDir(root); } 
 		checkSort();
+
+
+		//when the up button is pressed
+		up_Dir.setOnClickListener(new OnClickListener(){
+			public void onClick(View arg0) {
+				//go up one level
+			}	
+		});
+
+
+		//when the history button is pressed
+		history_Button.setOnClickListener(new OnClickListener(){
+			public void onClick(View arg0) {
+				//populate according to whats in the history
+			}	
+		});
 
 		//switches from tile view to list view
 		switchView.setOnClickListener(new OnClickListener() {
@@ -102,17 +120,17 @@ public class MainActivity extends Activity {
 			}	
 		});
 
-		historySpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-			public void onItemSelected(AdapterView<?> arg0, View arg1,
-					int pos, long arg3) {
-				//getDir(historySpinner.getItemAtPosition(pos).toString());
-				if(historySpinner.getItemAtPosition(pos).toString().equals("Clear History")) {
-					history.clear(); //if clear history "button" is pressed, clear the spinner
-					history.add("Clear History"); //re-adds the "button"
-				}
-			}
-			public void onNothingSelected(AdapterView<?> arg0) { }
-		});
+		//		historySpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+		//			public void onItemSelected(AdapterView<?> arg0, View arg1,
+		//					int pos, long arg3) {
+		//				//getDir(historySpinner.getItemAtPosition(pos).toString());
+		//				if(historySpinner.getItemAtPosition(pos).toString().equals("Clear History")) {
+		//					history.clear(); //if clear history "button" is pressed, clear the spinner
+		//					history.add("Clear History"); //re-adds the "button"
+		//				}
+		//			}
+		//			public void onNothingSelected(AdapterView<?> arg0) { }
+		//		});
 
 	}
 
@@ -301,8 +319,8 @@ public class MainActivity extends Activity {
 
 		ArrayAdapter<String> historyList =
 				new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, history);
-		historySpinner.setAdapter(historyList); //sets the history arraylist to populate the spinner
-		historySpinner.setSelection(history.size()-1); //sets the spinner to display the history correctly
+		//		historySpinner.setAdapter(historyList); //sets the history arraylist to populate the spinner
+		//		historySpinner.setSelection(history.size()-1); //sets the spinner to display the history correctly
 
 	}
 
