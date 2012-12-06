@@ -31,10 +31,10 @@ public class MainActivityList extends Activity {
 	public List<String> path = null;
 	public String root;
 	public List<String> history = new ArrayList<String>(); //list of previously clicked on file paths 
-	public ImageButton switchView;
+	public ImageButton switchView,history_Button,up_Dir;
 	public Button sortAlpha;
 	boolean isSorted, isTile;
-	public Spinner historySpinner;
+	//public Spinner historySpinner;
 	public ListView list;
 
 	@Override
@@ -43,11 +43,13 @@ public class MainActivityList extends Activity {
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_main_list);
-		
+
 		list = (ListView)findViewById(R.id.list);
-		historySpinner = (Spinner)findViewById(R.id.historySpinner);
+		//historySpinner = (Spinner)findViewById(R.id.historySpinner);
 		sortAlpha = (Button)findViewById(R.id.sortAlpha);
 		switchView = (ImageButton)findViewById(R.id.switchView);
+		history_Button = (ImageButton)findViewById(R.id.historyButton);
+		up_Dir = (ImageButton)findViewById(R.id.up_Button);
 		switchView.setBackgroundColor(Color.GRAY);
 		loadSharedPrefs();
 		Log.v("Tile", isTile+"");
@@ -58,14 +60,18 @@ public class MainActivityList extends Activity {
 		checkSort();
 
 
-		//when the list views button is pushed
-		switchView.setOnClickListener(new OnClickListener() {
+		//when the up button is pressed
+		up_Dir.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
-				isTile = true;
-				saveSharedPrefs("Activity");
-				Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-				finish();
-				startActivity(intent);
+				//go up one level
+			}	
+		});
+
+
+		//when the history button is pressed
+		history_Button.setOnClickListener(new OnClickListener(){
+			public void onClick(View arg0) {
+				//populate according to whats in the history
 			}	
 		});
 
@@ -83,27 +89,39 @@ public class MainActivityList extends Activity {
 			}	
 		});
 
+
+		//when the list views button is pushed
+		switchView.setOnClickListener(new OnClickListener() {
+			public void onClick(View arg0) {
+				isTile = true;
+				saveSharedPrefs("Activity");
+				Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+				finish();
+				startActivity(intent);
+			}	
+		});
+
 		ArrayAdapter<String> historyList =
 				new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, history);
-		historySpinner.setAdapter(historyList);
-		historySpinner.setSelection(history.size()-1);
+		//		historySpinner.setAdapter(historyList);
+		//		historySpinner.setSelection(history.size()-1);
 
-		historySpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-			public void onItemSelected(AdapterView<?> arg0, View arg1, int pos, long arg3) {
-				//getDir(historySpinner.getItemAtPosition(pos).toString());
-				if(historySpinner.getItemAtPosition(pos).toString().equals("Clear History")) {
-					history.clear();
-					history.add("Clear History");
-				}
-			}
-			public void onNothingSelected(AdapterView<?> arg0) { }
-		});
+		//		historySpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+		//			public void onItemSelected(AdapterView<?> arg0, View arg1, int pos, long arg3) {
+		//				//getDir(historySpinner.getItemAtPosition(pos).toString());
+		//				if(historySpinner.getItemAtPosition(pos).toString().equals("Clear History")) {
+		//					history.clear();
+		//					history.add("Clear History");
+		//				}
+		//			}
+		//			public void onNothingSelected(AdapterView<?> arg0) { }
+		//		});
 
 		list.setOnItemClickListener(new OnItemClickListener() {
 
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 					long arg3) {
-				
+
 				File file = new File(path.get(position));
 				history.add(path.get(position));
 				if (file.isDirectory())
@@ -111,7 +129,7 @@ public class MainActivityList extends Activity {
 					if(file.canRead()){
 						getDir(path.get(position));
 					} else{
-						
+
 					} 
 				} else {
 					Shared.openPdf(file, MainActivityList.this);
