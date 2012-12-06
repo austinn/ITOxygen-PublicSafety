@@ -69,8 +69,8 @@ public class MainActivity extends Activity {
 
 		root = Environment.getExternalStorageDirectory().getPath(); //gets the root path of SD card
 		history.add("Clear History"); //adds a "button" to clear history
-		loadSharedPrefs();
 		
+		loadSharedPrefs();
 		if(!isTile) {
 			saveSharedPrefs("Activity");
 			Intent intent = new Intent(getApplicationContext(), MainActivityList.class);
@@ -81,13 +81,12 @@ public class MainActivity extends Activity {
 			isTile = true;
 		}
 
-
-		if(root != null) { getDir(root); } 
+		if(root != null) { 
+			getDir(root); 
+		} 
 		checkSort();
-
-
-
-
+		
+		//button calls
 		//when the up button is pressed
 		up_Dir.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
@@ -181,10 +180,8 @@ public class MainActivity extends Activity {
 			sortAlpha.setText("Z > A");
 			sortAlpha.setTextColor(Color.BLACK);
 		}
-
 		populate(); //puts buttons on screen
 	}
-
 	/**
 	 * Saves SharedPreferences
 	 * @param name - name of the key in sharedPrefs
@@ -211,7 +208,7 @@ public class MainActivity extends Activity {
 		SharedPreferences loadPrefs = getSharedPreferences(PREFS_NAME, 0);
 		isSorted = loadPrefs.getBoolean("Alpha", true);
 		isTile = loadPrefs.getBoolean("Activity", false);
-		//isHistory = loadPrefs.getBoolean("",false);
+		isHistory = loadPrefs.getBoolean("History",false);
 	}
 
 
@@ -238,7 +235,10 @@ public class MainActivity extends Activity {
 				path.add(file.getPath()); 
 				if(file.isDirectory()) {
 					item.add(file.getName() + "/"); //if the item is a folder
-				} else {
+					//boolean for if it is a folder or not, used to
+					//know when to display a folder icon or file icon
+				} 
+				else {
 					item.add(file.getName()); //if the item is a file
 				}
 			}	
@@ -251,12 +251,13 @@ public class MainActivity extends Activity {
 		if (file.isDirectory()) {
 			if(file.canRead()){
 				getDir(path.get(v.getId()));
-				
+
 				//Replace if statement with checksort?
-				if(isSorted) {
-					Collections.sort(item, String.CASE_INSENSITIVE_ORDER);
-					Collections.sort(path, String.CASE_INSENSITIVE_ORDER);
-				}
+				checkSort();
+//				if(isSorted) {
+//					Collections.sort(item, String.CASE_INSENSITIVE_ORDER);
+//					Collections.sort(path, String.CASE_INSENSITIVE_ORDER);
+//				}
 				populate();
 			}
 			else{ 
@@ -282,19 +283,8 @@ public class MainActivity extends Activity {
 		int rotation = display.getRotation();
 		int columNum = 0;
 
-
-
-		/* 
-		if(rotation == 0 || rotation == 180){
-			columNum = 4;
-		}else{
-			columNum = 7;
-		}
-		 */
 		columNum = width/180;
-
 		int rowNum = item.size()/columNum;
-
 		if(item.size()%columNum != 0)
 			rowNum++;
 
@@ -303,7 +293,7 @@ public class MainActivity extends Activity {
 			imgRow.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 			LinearLayout textRow = new LinearLayout(getApplicationContext());
 			textRow.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-			
+
 			for(int j = 0; j < columNum; j++){
 				if(j+(i*columNum) < item.size()){
 					ImageButton imgBtn = new ImageButton(this);
@@ -327,9 +317,7 @@ public class MainActivity extends Activity {
 					imgRow.addView(imgBtn);
 					textRow.addView(btn);
 				}
-
 			}
-
 			layout.addView(imgRow);
 			layout.addView(textRow);
 		}
@@ -343,13 +331,13 @@ public class MainActivity extends Activity {
 
 
 	/**
-	 * Class that is called when a button from the commandDialog is pressed
+	 * Class that is called when a folder is clicked
 	 */
 	class ClickListener implements OnClickListener {
 		public void onClick(View v) {
-			//Log.v("Click Occurs", "This is a click");
+			//Log.e("Click Occurs", "This is a click");
 			File file = new File(path.get(v.getId()));
-			history.add(path.get(v.getId()));
+			history.add(path.get(v.getId()));			
 			if (file.isDirectory()) {
 				if(file.canRead()){
 					getDir(path.get(v.getId()));
@@ -363,7 +351,8 @@ public class MainActivity extends Activity {
 					new AlertDialog.Builder(MainActivity.this)
 					.setIcon(R.drawable.ic_launcher)
 					.setTitle("[" + file.getName() + "] folder can't be read!")
-					.setPositiveButton("OK", null).show(); 
+					.setPositiveButton("OK", null).show();
+					
 				}	
 			}
 			else { 
