@@ -37,8 +37,7 @@ public class MainActivity extends Activity {
 	//public Spinner historySpinner;
 	LinearLayout layout;
 	public String root;
-	public ImageButton switchView,historyButton,upDir,rootButton;
-	public Button sortAlpha;
+	public ImageButton switchView,historyButton,upDir,rootButton, sortAlpha;
 	boolean isSorted, isTile, isHistory;
 
 	//screen
@@ -60,16 +59,21 @@ public class MainActivity extends Activity {
 		//historySpinner = (Spinner)findViewById(R.id.historySpinner);
 
 		//buttons
-		sortAlpha = (Button)findViewById(R.id.sortAlpha);
+		sortAlpha = (ImageButton)findViewById(R.id.sortAlpha);
 		switchView = (ImageButton)findViewById(R.id.switchView);
 		historyButton = (ImageButton)findViewById(R.id.historyButton);
 		upDir = (ImageButton)findViewById(R.id.upButton);
 		rootButton=(ImageButton)findViewById(R.id.rootButton);
 
 
+		sortAlpha.setMinimumWidth(width/5);
+		switchView.setMinimumWidth(width/5);
+		historyButton.setMinimumWidth(width/5);
+		upDir.setMinimumWidth(width/5);
+		rootButton.setMinimumWidth(width/5);
+
 		root = Environment.getExternalStorageDirectory().getPath(); //gets the root path of SD card
-		history.add("Clear History"); //adds a "button" to clear history
-		
+
 		loadSharedPrefs();
 		if(!isTile) {
 			saveSharedPrefs("Activity");
@@ -85,21 +89,21 @@ public class MainActivity extends Activity {
 			getDir(root); 
 		} 
 		checkSort();
-		
+
 		//button calls
 		//when the up button is pressed
 		upDir.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
-				//go up one level
-				Log.e("root","One up button pushed");
+				getDir(history.get(history.size()-1));
+				checkSort();
 			}	
 		});
 
 		//when the root button is pressed
 		rootButton.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
-				//populate according to history list
-				Log.e("root","Root button pushed");
+				getDir(root);
+				checkSort();
 			}	
 		});
 
@@ -157,28 +161,17 @@ public class MainActivity extends Activity {
 	 */
 	protected void checkSort() {
 
-		if(history.size() <= 1) {
-			getDir(root);
-		}
-		else {
-			getDir(history.get(history.size()-1).toString());
-		}
-
 		if (isSorted) {
 			//Alpha Sort
 			Collections.sort(item, String.CASE_INSENSITIVE_ORDER); //sorts the filenames
 			Collections.sort(path, String.CASE_INSENSITIVE_ORDER); //sorts the spinner
-			sortAlpha.setText("A > Z");
-			sortAlpha.setBackgroundColor(Color.BLACK);
-			sortAlpha.setTextColor(Color.YELLOW);
+			sortAlpha.setImageResource(R.drawable.ic_media_next);
 		}
 		else {	
 			//Reverse Alpha Sort
 			Collections.sort(item, Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER)); //sorts the filenames
 			Collections.sort(path, Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER)); //sorts the spinner
-			sortAlpha.setBackgroundColor(Color.YELLOW);
-			sortAlpha.setText("Z > A");
-			sortAlpha.setTextColor(Color.BLACK);
+			sortAlpha.setImageResource(R.drawable.ic_media_previous);
 		}
 		populate(); //puts buttons on screen
 	}
@@ -249,16 +242,10 @@ public class MainActivity extends Activity {
 	public void goToParent(View v) {
 		File file = new File(path.get(v.getId()));
 		if (file.isDirectory()) {
+
 			if(file.canRead()){
 				getDir(path.get(v.getId()));
-
-				//Replace if statement with checksort?
 				checkSort();
-//				if(isSorted) {
-//					Collections.sort(item, String.CASE_INSENSITIVE_ORDER);
-//					Collections.sort(path, String.CASE_INSENSITIVE_ORDER);
-//				}
-				populate();
 			}
 			else{ 
 				new AlertDialog.Builder(MainActivity.this)
@@ -297,14 +284,25 @@ public class MainActivity extends Activity {
 			for(int j = 0; j < columNum; j++){
 				if(j+(i*columNum) < item.size()){
 					ImageButton imgBtn = new ImageButton(this);
-					imgBtn.setImageResource(R.drawable.psafety_folder);
+
 					imgBtn.setBackgroundDrawable(null);
 					imgBtn.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 					imgBtn.setMinimumWidth(width/columNum);
 					imgBtn.setMinimumHeight(width/columNum);
 					imgBtn.setId(j + (i * columNum));
-					imgBtn.setOnClickListener(new ClickListener());
 
+					File file = new File(path.get(j+(i*columNum)));
+					if(file.isDirectory()) {
+						imgBtn.setImageResource(R.drawable.psafety_folder);
+					}
+					else {
+						if(file.getName().contains(".pdf")) { imgBtn.setImageResource(R.drawable.pdf); }
+						else if(file.getName().contains(".mp3")) { imgBtn.setImageResource(R.drawable.mp3); }
+						else if(file.getName().contains(".apk")) { imgBtn.setImageResource(R.drawable.apk); }
+					}
+
+
+					imgBtn.setOnClickListener(new ClickListener());
 					TextView btn = new TextView(this);
 					btn.setText(item.get(j+(i*columNum)));
 					btn.setTextSize(14);
@@ -335,8 +333,9 @@ public class MainActivity extends Activity {
 	 */
 	class ClickListener implements OnClickListener {
 		public void onClick(View v) {
-			//Log.e("Click Occurs", "This is a click");
+
 			File file = new File(path.get(v.getId()));
+			Log.e("File Extension:", file.getName());
 			history.add(path.get(v.getId()));			
 			if (file.isDirectory()) {
 				if(file.canRead()){
@@ -352,7 +351,7 @@ public class MainActivity extends Activity {
 					.setIcon(R.drawable.ic_launcher)
 					.setTitle("[" + file.getName() + "] folder can't be read!")
 					.setPositiveButton("OK", null).show();
-					
+
 				}	
 			}
 			else { 

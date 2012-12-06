@@ -9,29 +9,47 @@
         android:layout_height="wrap_content" >
 
         <ImageButton
-            android:id="@+id/upButton"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:contentDescription="@string/activity_main_up_button"
-            android:src="@drawable/g5756" />
-
-        <ImageButton
             android:id="@+id/switchView"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:contentDescription="@string/activity_main_sort_by_size"
             android:src="@android:drawable/ic_menu_sort_by_size" />
 
-        <Button
+        <ImageButton
             android:id="@+id/sortAlpha"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/switchView"
             android:contentDescription="@string/activity_main_sort_alphabetically"
-            android:text = "A > Z" />
+            android:src = "@android:drawable/ic_media_next" />
+
+        <ImageButton
+            android:id="@+id/historyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/sortAlpha"
+            android:src="@android:drawable/ic_menu_recent_history" />
+
+        <ImageButton
+            android:id="@+id/rootButton"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:src="@android:drawable/ic_menu_myplaces" />
+
+        <ImageButton
+            android:id="@+id/upButton"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/rootButton"
+            android:contentDescription="@string/activity_main_up_button"
+            android:src="@android:drawable/ic_menu_set_as" />
 
         <TextView
             android:id="@+id/textView1"
@@ -39,26 +57,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/activity_main_button_up"
+            android:layout_below="@+id/switchView"
             android:background="#287AA9"
-            android:height="3dp"
-            android:text="" />
-
-        <ImageButton
-            android:id="@+id/historyButton"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/sortAlpha"
-            android:src="@android:drawable/ic_menu_recent_history" />
-
-        <ImageButton
-            android:id="@+id/rootButton"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/historyButton"
-            android:src="@android:drawable/ic_menu_myplaces" />
+            android:height="3dp" />
 
     </RelativeLayout>
 
