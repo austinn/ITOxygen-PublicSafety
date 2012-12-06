@@ -31,10 +31,10 @@ public class MainActivityList extends Activity {
 	public List<String> path = null;
 	public String root;
 	public List<String> history = new ArrayList<String>(); //list of previously clicked on file paths 
-	public ImageButton switchView;
+	public ImageButton switchView,history_Button,up_Dir;
 	public Button sortAlpha;
 	boolean isSorted, isTile;
-	public Spinner historySpinner;
+	//public Spinner historySpinner;
 	public ListView list;
 
 	@Override
@@ -45,9 +45,11 @@ public class MainActivityList extends Activity {
 		setContentView(R.layout.activity_main_list);
 		
 		list = (ListView)findViewById(R.id.list);
-		historySpinner = (Spinner)findViewById(R.id.historySpinner);
+		//historySpinner = (Spinner)findViewById(R.id.historySpinner);
 		sortAlpha = (Button)findViewById(R.id.sortAlpha);
 		switchView = (ImageButton)findViewById(R.id.switchView);
+		history_Button = (ImageButton)findViewById(R.id.historyButton);
+		up_Dir = (ImageButton)findViewById(R.id.up_Button);
 		switchView.setBackgroundColor(Color.GRAY);
 		loadSharedPrefs();
 		Log.v("Tile", isTile+"");
@@ -85,19 +87,19 @@ public class MainActivityList extends Activity {
 
 		ArrayAdapter<String> historyList =
 				new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, history);
-		historySpinner.setAdapter(historyList);
-		historySpinner.setSelection(history.size()-1);
+//		historySpinner.setAdapter(historyList);
+//		historySpinner.setSelection(history.size()-1);
 
-		historySpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-			public void onItemSelected(AdapterView<?> arg0, View arg1, int pos, long arg3) {
-				//getDir(historySpinner.getItemAtPosition(pos).toString());
-				if(historySpinner.getItemAtPosition(pos).toString().equals("Clear History")) {
-					history.clear();
-					history.add("Clear History");
-				}
-			}
-			public void onNothingSelected(AdapterView<?> arg0) { }
-		});
+//		historySpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+//			public void onItemSelected(AdapterView<?> arg0, View arg1, int pos, long arg3) {
+//				//getDir(historySpinner.getItemAtPosition(pos).toString());
+//				if(historySpinner.getItemAtPosition(pos).toString().equals("Clear History")) {
+//					history.clear();
+//					history.add("Clear History");
+//				}
+//			}
+//			public void onNothingSelected(AdapterView<?> arg0) { }
+//		});
 
 		list.setOnItemClickListener(new OnItemClickListener() {
 
