@@ -37,9 +37,9 @@ public class MainActivity extends Activity {
 	//public Spinner historySpinner;
 	LinearLayout layout;
 	public String root;
-	public ImageButton switchView,history_Button,up_Dir;
+	public ImageButton switchView,history_Button,up_Dir,root_Button;
 	public Button sortAlpha;
-	boolean isSorted, isTile;
+	boolean isSorted, isTile, isHistory;
 
 	//screen
 	int width,height;
@@ -58,15 +58,19 @@ public class MainActivity extends Activity {
 		height = display.getHeight();
 
 		//historySpinner = (Spinner)findViewById(R.id.historySpinner);
+
+		//buttons
 		sortAlpha = (Button)findViewById(R.id.sortAlpha);
 		switchView = (ImageButton)findViewById(R.id.switchView);
 		history_Button = (ImageButton)findViewById(R.id.historyButton);
 		up_Dir = (ImageButton)findViewById(R.id.up_Button);
+		root_Button=(ImageButton)findViewById(R.id.rootButton);
+
 
 		root = Environment.getExternalStorageDirectory().getPath(); //gets the root path of SD card
 		history.add("Clear History"); //adds a "button" to clear history
+		
 		loadSharedPrefs();
-		Log.v("Tile", isTile+"");
 		if(!isTile) {
 			saveSharedPrefs("Activity");
 			Intent intent = new Intent(getApplicationContext(), MainActivityList.class);
@@ -76,14 +80,26 @@ public class MainActivity extends Activity {
 		else {
 			isTile = true;
 		}
-		if(root != null) { getDir(root); } 
+
+		if(root != null) { 
+			getDir(root); 
+		} 
 		checkSort();
-
-
+		
+		//button calls
 		//when the up button is pressed
 		up_Dir.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
 				//go up one level
+				Log.e("root","One up button pushed");
+			}	
+		});
+
+		//when the root button is pressed
+		root_Button.setOnClickListener(new OnClickListener(){
+			public void onClick(View arg0) {
+				//populate according to history list
+				Log.e("root","Root button pushed");
 			}	
 		});
 
@@ -92,6 +108,7 @@ public class MainActivity extends Activity {
 		history_Button.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
 				//populate according to whats in the history
+				Log.e("root","History button is pushed");
 			}	
 		});
 
@@ -163,10 +180,8 @@ public class MainActivity extends Activity {
 			sortAlpha.setText("Z > A");
 			sortAlpha.setTextColor(Color.BLACK);
 		}
-
 		populate(); //puts buttons on screen
 	}
-
 	/**
 	 * Saves SharedPreferences
 	 * @param name - name of the key in sharedPrefs
@@ -174,8 +189,15 @@ public class MainActivity extends Activity {
 	public void saveSharedPrefs(String name) {
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 		SharedPreferences.Editor editor = settings.edit();
-		editor.putBoolean(name, isSorted);
-		editor.putBoolean(name, isTile);
+		if (name.equals("Alpha")) {
+			editor.putBoolean(name, isSorted);
+		}
+		else if (name.equals("Activity")){
+			editor.putBoolean(name, isTile);
+		}
+		else if (name.equals("History")){
+			editor.putBoolean(name,isHistory);
+		}
 		editor.commit();
 	}
 
@@ -186,6 +208,7 @@ public class MainActivity extends Activity {
 		SharedPreferences loadPrefs = getSharedPreferences(PREFS_NAME, 0);
 		isSorted = loadPrefs.getBoolean("Alpha", true);
 		isTile = loadPrefs.getBoolean("Activity", false);
+		isHistory = loadPrefs.getBoolean("History",false);
 	}
 
 
@@ -212,7 +235,10 @@ public class MainActivity extends Activity {
 				path.add(file.getPath()); 
 				if(file.isDirectory()) {
 					item.add(file.getName() + "/"); //if the item is a folder
-				} else {
+					//boolean for if it is a folder or not, used to
+					//know when to display a folder icon or file icon
+				} 
+				else {
 					item.add(file.getName()); //if the item is a file
 				}
 			}	
@@ -225,10 +251,13 @@ public class MainActivity extends Activity {
 		if (file.isDirectory()) {
 			if(file.canRead()){
 				getDir(path.get(v.getId()));
-				if(isSorted) {
-					Collections.sort(item, String.CASE_INSENSITIVE_ORDER);
-					Collections.sort(path, String.CASE_INSENSITIVE_ORDER);
-				}
+
+				//Replace if statement with checksort?
+				checkSort();
+//				if(isSorted) {
+//					Collections.sort(item, String.CASE_INSENSITIVE_ORDER);
+//					Collections.sort(path, String.CASE_INSENSITIVE_ORDER);
+//				}
 				populate();
 			}
 			else{ 
@@ -254,49 +283,28 @@ public class MainActivity extends Activity {
 		int rotation = display.getRotation();
 		int columNum = 0;
 
-
-
-		/* 
-		if(rotation == 0 || rotation == 180){
-			columNum = 4;
-		}else{
-			columNum = 7;
-		}
-		 */
 		columNum = width/180;
-
 		int rowNum = item.size()/columNum;
-
 		if(item.size()%columNum != 0)
 			rowNum++;
-
-
-		Log.e(root, "Item Size: "+item.size()+"");
-		Log.e(root, "width: "+width+"");
-		Log.e(root, "height: "+height+"");
-
 
 		for(int i = 0; i < rowNum; i++){		
 			LinearLayout imgRow = new LinearLayout(getApplicationContext());
 			imgRow.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 			LinearLayout textRow = new LinearLayout(getApplicationContext());
 			textRow.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+
 			for(int j = 0; j < columNum; j++){
-
 				if(j+(i*columNum) < item.size()){
-
 					ImageButton imgBtn = new ImageButton(this);
-
-
 					imgBtn.setImageResource(R.drawable.psafety_folder);
-
-
 					imgBtn.setBackgroundDrawable(null);
 					imgBtn.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 					imgBtn.setMinimumWidth(width/columNum);
 					imgBtn.setMinimumHeight(width/columNum);
 					imgBtn.setId(j + (i * columNum));
 					imgBtn.setOnClickListener(new ClickListener());
+
 					TextView btn = new TextView(this);
 					btn.setText(item.get(j+(i*columNum)));
 					btn.setTextSize(14);
@@ -308,11 +316,8 @@ public class MainActivity extends Activity {
 
 					imgRow.addView(imgBtn);
 					textRow.addView(btn);
-
 				}
-
 			}
-
 			layout.addView(imgRow);
 			layout.addView(textRow);
 		}
@@ -326,13 +331,13 @@ public class MainActivity extends Activity {
 
 
 	/**
-	 * Class that is called when a button from the commandDialog is pressed
+	 * Class that is called when a folder is clicked
 	 */
 	class ClickListener implements OnClickListener {
 		public void onClick(View v) {
-			//Log.v("Click Occurs", "This is a click");
+			//Log.e("Click Occurs", "This is a click");
 			File file = new File(path.get(v.getId()));
-			history.add(path.get(v.getId()));
+			history.add(path.get(v.getId()));			
 			if (file.isDirectory()) {
 				if(file.canRead()){
 					getDir(path.get(v.getId()));
@@ -346,7 +351,8 @@ public class MainActivity extends Activity {
 					new AlertDialog.Builder(MainActivity.this)
 					.setIcon(R.drawable.ic_launcher)
 					.setTitle("[" + file.getName() + "] folder can't be read!")
-					.setPositiveButton("OK", null).show(); 
+					.setPositiveButton("OK", null).show();
+					
 				}	
 			}
 			else { 
