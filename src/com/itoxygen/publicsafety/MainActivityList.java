@@ -43,7 +43,7 @@ public class MainActivityList extends Activity {
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_main_list);
-		
+
 		list = (ListView)findViewById(R.id.list);
 		//historySpinner = (Spinner)findViewById(R.id.historySpinner);
 		sortAlpha = (Button)findViewById(R.id.sortAlpha);
@@ -60,14 +60,18 @@ public class MainActivityList extends Activity {
 		checkSort();
 
 
-		//when the list views button is pushed
-		switchView.setOnClickListener(new OnClickListener() {
+		//when the up button is pressed
+		up_Dir.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
-				isTile = true;
-				saveSharedPrefs("Activity");
-				Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-				finish();
-				startActivity(intent);
+				//go up one level
+			}	
+		});
+
+
+		//when the history button is pressed
+		history_Button.setOnClickListener(new OnClickListener(){
+			public void onClick(View arg0) {
+				//populate according to whats in the history
 			}	
 		});
 
@@ -85,27 +89,39 @@ public class MainActivityList extends Activity {
 			}	
 		});
 
+
+		//when the list views button is pushed
+		switchView.setOnClickListener(new OnClickListener() {
+			public void onClick(View arg0) {
+				isTile = true;
+				saveSharedPrefs("Activity");
+				Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+				finish();
+				startActivity(intent);
+			}	
+		});
+
 		ArrayAdapter<String> historyList =
 				new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, history);
-//		historySpinner.setAdapter(historyList);
-//		historySpinner.setSelection(history.size()-1);
+		//		historySpinner.setAdapter(historyList);
+		//		historySpinner.setSelection(history.size()-1);
 
-//		historySpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-//			public void onItemSelected(AdapterView<?> arg0, View arg1, int pos, long arg3) {
-//				//getDir(historySpinner.getItemAtPosition(pos).toString());
-//				if(historySpinner.getItemAtPosition(pos).toString().equals("Clear History")) {
-//					history.clear();
-//					history.add("Clear History");
-//				}
-//			}
-//			public void onNothingSelected(AdapterView<?> arg0) { }
-//		});
+		//		historySpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+		//			public void onItemSelected(AdapterView<?> arg0, View arg1, int pos, long arg3) {
+		//				//getDir(historySpinner.getItemAtPosition(pos).toString());
+		//				if(historySpinner.getItemAtPosition(pos).toString().equals("Clear History")) {
+		//					history.clear();
+		//					history.add("Clear History");
+		//				}
+		//			}
+		//			public void onNothingSelected(AdapterView<?> arg0) { }
+		//		});
 
 		list.setOnItemClickListener(new OnItemClickListener() {
 
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 					long arg3) {
-				
+
 				File file = new File(path.get(position));
 				history.add(path.get(position));
 				if (file.isDirectory())
@@ -113,7 +129,7 @@ public class MainActivityList extends Activity {
 					if(file.canRead()){
 						getDir(path.get(position));
 					} else{
-						
+
 					} 
 				} else {
 					Shared.openPdf(file, MainActivityList.this);
