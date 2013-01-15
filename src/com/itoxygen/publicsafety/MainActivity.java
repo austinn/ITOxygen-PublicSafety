@@ -249,9 +249,9 @@ public class MainActivity extends Activity {
 
 		for(int i = 0; i < rowNum; i++){		
 			LinearLayout imgRow = new LinearLayout(getApplicationContext());
-			imgRow.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+			imgRow.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 			LinearLayout textRow = new LinearLayout(getApplicationContext());
-			imgRow.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+			textRow.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 			for(int j = 0; j < columNum; j++){
 				
 				if(j+(i*columNum) < item.size()){
@@ -273,7 +273,7 @@ public class MainActivity extends Activity {
 					btn.setBackgroundDrawable(null);
 					btn.setText(item.get(j+(i*columNum)));
 					btn.setTextSize(14);
-					btn.setGravity(Gravity.CENTER);
+					//btn.setGravity(Gravity.CENTER);
 					btn.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 					btn.setWidth(width/columNum);
 					btn.setId(j + (i * columNum));
