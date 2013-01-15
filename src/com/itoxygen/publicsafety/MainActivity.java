@@ -296,9 +296,13 @@ public class MainActivity extends Activity {
 						imgBtn.setImageResource(R.drawable.psafety_folder);
 					}
 					else {
-						if(file.getName().contains(".pdf")) { imgBtn.setImageResource(R.drawable.pdf); }
-						else if(file.getName().contains(".mp3")) { imgBtn.setImageResource(R.drawable.mp3); }
-						else if(file.getName().contains(".apk")) { imgBtn.setImageResource(R.drawable.apk); }
+						if (file.getName().contains(".mp3"))
+							imgBtn.setImageResource(R.drawable.psafety_mp3);
+						else
+							imgBtn.setImageResource(R.drawable.psafety_file);
+//						if(file.getName().contains(".pdf")) { imgBtn.setImageResource(R.drawable.pdf); }
+//						else if(file.getName().contains(".mp3")) { imgBtn.setImageResource(R.drawable.mp3); }
+//						else if(file.getName().contains(".apk")) { imgBtn.setImageResource(R.drawable.apk); }
 					}
 
 
