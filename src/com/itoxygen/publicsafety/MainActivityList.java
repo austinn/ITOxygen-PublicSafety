@@ -14,6 +14,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Display;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -31,11 +32,14 @@ public class MainActivityList extends Activity {
 	public List<String> path = null;
 	public String root;
 	public List<String> history = new ArrayList<String>(); //list of previously clicked on file paths 
-	public ImageButton switchView,history_Button,up_Dir,root_Button;
-	public Button sortAlpha;
+	public ImageButton switchView,historyButton,upDir,rootButton, sortAlpha;
 	boolean isSorted, isTile,isHistory;
 	//public Spinner historySpinner;
 	public ListView list;
+
+	//screen
+	int width,height;
+	Display display;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -44,13 +48,24 @@ public class MainActivityList extends Activity {
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_main_list);
 
+		//screen
+		display = getWindowManager().getDefaultDisplay();
+		width = display.getWidth();
+		height = display.getHeight();
+
 		list = (ListView)findViewById(R.id.list);
 		//historySpinner = (Spinner)findViewById(R.id.historySpinner);
-		sortAlpha = (Button)findViewById(R.id.sortAlpha);
+		sortAlpha = (ImageButton)findViewById(R.id.sortAlpha);
 		switchView = (ImageButton)findViewById(R.id.switchView);
-		history_Button = (ImageButton)findViewById(R.id.historyButton);
-		up_Dir = (ImageButton)findViewById(R.id.up_Button);
-		root_Button=(ImageButton)findViewById(R.id.rootButton);
+		historyButton = (ImageButton)findViewById(R.id.historyButton);
+		upDir = (ImageButton)findViewById(R.id.upButton);
+		rootButton=(ImageButton)findViewById(R.id.rootButton);
+
+		sortAlpha.setMinimumWidth(width/5);
+		switchView.setMinimumWidth(width/5);
+		historyButton.setMinimumWidth(width/5);
+		upDir.setMinimumWidth(width/5);
+		rootButton.setMinimumWidth(width/5);
 
 		switchView.setBackgroundColor(Color.GRAY);
 		loadSharedPrefs();
@@ -61,7 +76,7 @@ public class MainActivityList extends Activity {
 
 
 		//when the up button is pressed
-		up_Dir.setOnClickListener(new OnClickListener(){
+		upDir.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
 				//go up one level
 				Log.e("root","Go up one level button pushed");
@@ -69,7 +84,7 @@ public class MainActivityList extends Activity {
 		});
 
 		//when the root button is pressed
-		root_Button.setOnClickListener(new OnClickListener(){
+		rootButton.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
 				//go up one level
 				Log.e("root","Root button pushed");
@@ -78,7 +93,7 @@ public class MainActivityList extends Activity {
 
 
 		//when the history button is pressed
-		history_Button.setOnClickListener(new OnClickListener(){
+		historyButton.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
 				//populate according to whats in the history
 				Log.e("root","History button pushed");
@@ -161,17 +176,13 @@ public class MainActivityList extends Activity {
 			//Alpha Sort
 			Collections.sort(item, String.CASE_INSENSITIVE_ORDER); //sorts the filenames
 			Collections.sort(path, String.CASE_INSENSITIVE_ORDER); //sorts the spinner
-			sortAlpha.setText("A > Z");
-			sortAlpha.setBackgroundColor(Color.BLACK);
-			sortAlpha.setTextColor(Color.YELLOW);
+			sortAlpha.setImageResource(R.drawable.ic_media_next);
 		}
 		else {	
 			//Reverse Alpha Sort
 			Collections.sort(item, Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER)); //sorts the filenames
 			Collections.sort(path, Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER)); //sorts the spinner
-			sortAlpha.setBackgroundColor(Color.YELLOW);
-			sortAlpha.setText("Z > A");
-			sortAlpha.setTextColor(Color.BLACK);
+			sortAlpha.setImageResource(R.drawable.ic_media_previous);
 		}
 		populate();
 	}
