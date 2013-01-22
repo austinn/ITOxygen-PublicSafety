@@ -29,8 +29,9 @@ public final class R {
         public static final int pdf=0x7f02000a;
         public static final int psafety_file=0x7f02000b;
         public static final int psafety_folder=0x7f02000c;
-        public static final int root=0x7f02000d;
-        public static final int up_button=0x7f02000e;
+        public static final int psafety_mp3=0x7f02000d;
+        public static final int root=0x7f02000e;
+        public static final int up_button=0x7f02000f;
     }
     public static final class id {
         public static final int activity_main_layout_action_bar=0x7f080001;
