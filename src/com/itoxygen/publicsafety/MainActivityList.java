@@ -176,13 +176,13 @@ public class MainActivityList extends Activity {
 			//Alpha Sort
 			Collections.sort(item, String.CASE_INSENSITIVE_ORDER); //sorts the filenames
 			Collections.sort(path, String.CASE_INSENSITIVE_ORDER); //sorts the spinner
-			sortAlpha.setImageResource(R.drawable.ic_media_next);
+			sortAlpha.setImageResource(R.drawable.up);
 		}
 		else {	
 			//Reverse Alpha Sort
 			Collections.sort(item, Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER)); //sorts the filenames
 			Collections.sort(path, Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER)); //sorts the spinner
-			sortAlpha.setImageResource(R.drawable.ic_media_previous);
+			sortAlpha.setImageResource(R.drawable.down);
 		}
 		populate();
 	}

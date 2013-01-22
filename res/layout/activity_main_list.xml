@@ -26,7 +26,8 @@
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/switchView"
             android:contentDescription="@string/activity_main_sort_alphabetically"
-            android:src = "@android:drawable/ic_media_next" />
+            android:background="@null"
+            android:src = "@drawable/up" />
         
         <ImageButton
             android:id="@+id/historyButton"
@@ -34,7 +35,8 @@
             android:layout_height="50dp"
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/sortAlpha"
-            android:src="@android:drawable/ic_menu_recent_history" />
+            android:background="@null"
+            android:src="@drawable/history" />
         
         <ImageButton
             android:id="@+id/rootButton"
@@ -42,7 +44,8 @@
             android:layout_height="50dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:src="@android:drawable/ic_menu_myplaces" />
+            android:background="@null"
+            android:src="@drawable/root" />
 
         <ImageButton
             android:id="@+id/upButton"
@@ -51,7 +54,8 @@
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/rootButton"
             android:contentDescription="@string/activity_main_up_button"
-            android:src="@android:drawable/ic_menu_set_as" />
+            android:background="@null"
+            android:src="@drawable/folder_up" />
 
         <TextView
             android:id="@+id/textView1"

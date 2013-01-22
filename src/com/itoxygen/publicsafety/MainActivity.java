@@ -111,8 +111,9 @@ public class MainActivity extends Activity {
 		//when the history button is pressed
 		historyButton.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
-				//populate according to whats in the history
-				Log.e("root","History button is pushed");
+				if(history.size() != 0)
+				populate(history);
+				
 			}	
 		});
 
@@ -141,18 +142,6 @@ public class MainActivity extends Activity {
 			}	
 		});
 
-		//		historySpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-		//			public void onItemSelected(AdapterView<?> arg0, View arg1,
-		//					int pos, long arg3) {
-		//				//getDir(historySpinner.getItemAtPosition(pos).toString());
-		//				if(historySpinner.getItemAtPosition(pos).toString().equals("Clear History")) {
-		//					history.clear(); //if clear history "button" is pressed, clear the spinner
-		//					history.add("Clear History"); //re-adds the "button"
-		//				}
-		//			}
-		//			public void onNothingSelected(AdapterView<?> arg0) { }
-		//		});
-
 	}
 
 	/**
@@ -165,15 +154,15 @@ public class MainActivity extends Activity {
 			//Alpha Sort
 			Collections.sort(item, String.CASE_INSENSITIVE_ORDER); //sorts the filenames
 			Collections.sort(path, String.CASE_INSENSITIVE_ORDER); //sorts the spinner
-			sortAlpha.setImageResource(R.drawable.ic_media_next);
+			sortAlpha.setImageResource(R.drawable.up);
 		}
 		else {	
 			//Reverse Alpha Sort
 			Collections.sort(item, Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER)); //sorts the filenames
 			Collections.sort(path, Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER)); //sorts the spinner
-			sortAlpha.setImageResource(R.drawable.ic_media_previous);
+			sortAlpha.setImageResource(R.drawable.down);
 		}
-		populate(); //puts buttons on screen
+		populate(item); //puts buttons on screen
 	}
 	/**
 	 * Saves SharedPreferences
@@ -262,7 +251,7 @@ public class MainActivity extends Activity {
 	 * Helper method that sets up all the buttons
 	 * Creates 5 rows
 	 */
-	private void populate() {
+	private void populate(List<String> item) {
 
 		layout = (LinearLayout) findViewById(R.id.lin);
 		layout.removeAllViews();
@@ -320,11 +309,6 @@ public class MainActivity extends Activity {
 			layout.addView(textRow);
 		}
 
-		ArrayAdapter<String> historyList =
-				new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, history);
-		//		historySpinner.setAdapter(historyList); //sets the history arraylist to populate the spinner
-		//		historySpinner.setSelection(history.size()-1); //sets the spinner to display the history correctly
-
 	}
 
 
@@ -335,8 +319,7 @@ public class MainActivity extends Activity {
 		public void onClick(View v) {
 
 			File file = new File(path.get(v.getId()));
-			Log.e("File Extension:", file.getName());
-			history.add(path.get(v.getId()));			
+			Log.e("File Extension:", file.getName());			
 			if (file.isDirectory()) {
 				if(file.canRead()){
 					getDir(path.get(v.getId()));
@@ -344,7 +327,7 @@ public class MainActivity extends Activity {
 						Collections.sort(item, String.CASE_INSENSITIVE_ORDER);
 						Collections.sort(path, String.CASE_INSENSITIVE_ORDER);
 					}
-					populate();
+					populate(item);
 				}
 				else{ 
 					new AlertDialog.Builder(MainActivity.this)
@@ -355,6 +338,8 @@ public class MainActivity extends Activity {
 				}	
 			}
 			else { 
+				history.add(path.get(v.getId()));
+				Log.v("Added:", history.get(history.size()-1));
 				//check file type
 				Shared.openPdf(file, MainActivity.this);
 				/*new AlertDialog.Builder(MainActivity.this)
