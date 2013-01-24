@@ -34,7 +34,7 @@ public class MainActivity extends Activity {
 	public List<String> item = null; 
 	public List<String> path = null;
 	public List<String> history = new ArrayList<String>(); //list of previously clicked on file paths 
-	//public Spinner historySpinner;
+	public List<String> upDirList = new ArrayList<String>();
 	LinearLayout layout;
 	public String root;
 	public ImageButton switchView,historyButton,upDir,rootButton, sortAlpha;
@@ -56,8 +56,6 @@ public class MainActivity extends Activity {
 		width = display.getWidth();
 		height = display.getHeight();
 
-		//historySpinner = (Spinner)findViewById(R.id.historySpinner);
-
 		//buttons
 		sortAlpha = (ImageButton)findViewById(R.id.sortAlpha);
 		switchView = (ImageButton)findViewById(R.id.switchView);
@@ -65,14 +63,15 @@ public class MainActivity extends Activity {
 		upDir = (ImageButton)findViewById(R.id.upButton);
 		rootButton=(ImageButton)findViewById(R.id.rootButton);
 
-
 		sortAlpha.setMinimumWidth(width/5);
 		switchView.setMinimumWidth(width/5);
 		historyButton.setMinimumWidth(width/5);
 		upDir.setMinimumWidth(width/5);
 		rootButton.setMinimumWidth(width/5);
 
-		root = Environment.getExternalStorageDirectory().getPath(); //gets the root path of SD card
+		//root = Environment.getExternalStorageDirectory().getPath(); //gets the root path of SD card
+		//root = Environment.getExternalStorageDirectory().getPath() + "/root_psafety"; //gets the root path of SD card
+		root = Environment.getRootDirectory().getPath();
 
 		loadSharedPrefs();
 		if(!isTile) {
@@ -90,12 +89,23 @@ public class MainActivity extends Activity {
 		} 
 		checkSort();
 
-		//button calls
 		//when the up button is pressed
 		upDir.setOnClickListener(new OnClickListener(){
-			public void onClick(View arg0) {
-				getDir(history.get(history.size()-1));
-				checkSort();
+			public void onClick(View v) {
+				if(upDirList.size()<2){
+					getDir(root);
+				}
+				else if (!upDirList.get(upDirList.size()-1).contains("/system")) {
+					getDir(root);
+				}
+				else if (!upDirList.get(upDirList.size()-2).equals("/system")) {
+					getDir(root);
+				}
+				else {
+					Log.v("PATH:", upDirList.get(upDirList.size()-2));
+					getDir(upDirList.get(upDirList.size()-2));
+					
+				}
 			}	
 		});
 
@@ -107,13 +117,11 @@ public class MainActivity extends Activity {
 			}	
 		});
 
-
 		//when the history button is pressed
 		historyButton.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
 				if(history.size() != 0)
-				populate(history);
-				
+					populate(history);
 			}	
 		});
 
@@ -193,7 +201,6 @@ public class MainActivity extends Activity {
 		isHistory = loadPrefs.getBoolean("History",false);
 	}
 
-
 	/**
 	 * Method that gets the directory of the given path
 	 * @param dirPath - string of the specified path
@@ -205,10 +212,10 @@ public class MainActivity extends Activity {
 		File[] files = f.listFiles();
 
 		if(!dirPath.equals(root)) {
-			item.add(root); //adds the root to the file directory
-			path.add(root); //adds the root to the history spinner
-			item.add("../"); //adds an "up" button to go up one folder
-			path.add(f.getParent()); 	
+			//item.add(root); //adds the root to the file directory
+			//path.add(root); //adds the root to the history spinner
+			//item.add("../"); //adds an "up" button to go up one folder
+			//path.add(f.getParent()); 	
 		}
 
 		for(int i=0; i < files.length; i++) { //iterate thru the files
@@ -228,24 +235,24 @@ public class MainActivity extends Activity {
 
 	}//end of get Dir method
 
-	public void goToParent(View v) {
-		File file = new File(path.get(v.getId()));
-		if (file.isDirectory()) {
-
-			if(file.canRead()){
-				getDir(path.get(v.getId()));
-				checkSort();
-			}
-			else{ 
-				new AlertDialog.Builder(MainActivity.this)
-				.setIcon(R.drawable.ic_launcher)
-				.setTitle("[" + file.getName() + "] folder can't be read!")
-				.setPositiveButton("OK", null).show(); 
-			}	
-		} else {
-			//this should not happen
-		}
-	}
+//	public void goToParent(View v) {
+//		File file = new File(path.get(v.getId()));
+//		if (file.isDirectory()) {
+//
+//			if(file.canRead()){
+//				getDir(path.get(v.getId()));
+//				checkSort();
+//			}
+//			else{ 
+//				new AlertDialog.Builder(MainActivity.this)
+//				.setIcon(R.drawable.ic_launcher)
+//				.setTitle("[" + file.getName() + "] folder can't be read!")
+//				.setPositiveButton("OK", null).show(); 
+//			}	
+//		} else {
+//			//this should not happen
+//		}
+//	}
 
 	/**
 	 * Helper method that sets up all the buttons
@@ -256,7 +263,6 @@ public class MainActivity extends Activity {
 		layout = (LinearLayout) findViewById(R.id.lin);
 		layout.removeAllViews();
 
-		int rotation = display.getRotation();
 		int columNum = 0;
 
 		columNum = width/180;
@@ -281,15 +287,8 @@ public class MainActivity extends Activity {
 					imgBtn.setId(j + (i * columNum));
 
 					File file = new File(path.get(j+(i*columNum)));
-					if(file.isDirectory()) {
-						imgBtn.setImageResource(R.drawable.psafety_folder);
-					}
-					else {
-						if(file.getName().contains(".pdf")) { imgBtn.setImageResource(R.drawable.pdf); }
-						else if(file.getName().contains(".mp3")) { imgBtn.setImageResource(R.drawable.mp3); }
-						else if(file.getName().contains(".apk")) { imgBtn.setImageResource(R.drawable.apk); }
-					}
-
+					if(file.isDirectory()) { imgBtn.setImageResource(R.drawable.psafety_folder); }
+					else if (file.getName().contains(".pdf")) { imgBtn.setImageResource(R.drawable.pdf); }
 
 					imgBtn.setOnClickListener(new ClickListener());
 					TextView btn = new TextView(this);
@@ -322,7 +321,10 @@ public class MainActivity extends Activity {
 			Log.e("File Extension:", file.getName());			
 			if (file.isDirectory()) {
 				if(file.canRead()){
+					upDirList.add(path.get(v.getId()));
+					Log.v("Added to UPDIR", path.get(v.getId()));
 					getDir(path.get(v.getId()));
+
 					if(isSorted) {
 						Collections.sort(item, String.CASE_INSENSITIVE_ORDER);
 						Collections.sort(path, String.CASE_INSENSITIVE_ORDER);
@@ -334,7 +336,6 @@ public class MainActivity extends Activity {
 					.setIcon(R.drawable.ic_launcher)
 					.setTitle("[" + file.getName() + "] folder can't be read!")
 					.setPositiveButton("OK", null).show();
-
 				}	
 			}
 			else { 
