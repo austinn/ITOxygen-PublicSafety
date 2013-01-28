@@ -89,12 +89,23 @@ public class MainActivity extends Activity {
 			getDir(root); 
 		} 
 		checkSort();
+		
+		Log.e("LOOK", root);
+
 
 		//button calls
 		//when the up button is pressed
 		upDir.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
-				getDir(history.get(history.size()-1));
+
+
+				//Check to see if you are at the root
+				if(root !=null){
+					getDir(history.get(history.size()-1));
+				}
+				else
+					Log.e(root, "Made it here");
+
 				checkSort();
 			}	
 		});
@@ -102,6 +113,7 @@ public class MainActivity extends Activity {
 		//when the root button is pressed
 		rootButton.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
+
 				getDir(root);
 				checkSort();
 			}	
@@ -216,10 +228,13 @@ public class MainActivity extends Activity {
 		File[] files = f.listFiles();
 
 		if(!dirPath.equals(root)) {
-			item.add(root); //adds the root to the file directory
-			path.add(root); //adds the root to the history spinner
-			item.add("../"); //adds an "up" button to go up one folder
-			path.add(f.getParent()); 	
+			
+			//the two items need to be removed			
+			
+			//item.add(root); //adds the root to the file directory
+			//path.add(root); //adds the root to the history spinner
+			//item.add("../"); //adds an "up" button to go up one folder
+			//path.add(f.getParent()); 	
 		}
 
 		for(int i=0; i < files.length; i++) { //iterate thru the files
@@ -300,9 +315,9 @@ public class MainActivity extends Activity {
 							imgBtn.setImageResource(R.drawable.psafety_mp3);
 						else
 							imgBtn.setImageResource(R.drawable.psafety_file);
-//						if(file.getName().contains(".pdf")) { imgBtn.setImageResource(R.drawable.pdf); }
-//						else if(file.getName().contains(".mp3")) { imgBtn.setImageResource(R.drawable.mp3); }
-//						else if(file.getName().contains(".apk")) { imgBtn.setImageResource(R.drawable.apk); }
+						//						if(file.getName().contains(".pdf")) { imgBtn.setImageResource(R.drawable.pdf); }
+						//						else if(file.getName().contains(".mp3")) { imgBtn.setImageResource(R.drawable.mp3); }
+						//						else if(file.getName().contains(".apk")) { imgBtn.setImageResource(R.drawable.apk); }
 					}
 
 
@@ -339,6 +354,7 @@ public class MainActivity extends Activity {
 	 */
 	class ClickListener implements OnClickListener {
 		public void onClick(View v) {
+			Log.e(root, "here");
 
 			File file = new File(path.get(v.getId()));
 			Log.e("File Extension:", file.getName());
@@ -368,8 +384,8 @@ public class MainActivity extends Activity {
 				.setTitle("[" + file.getName() + "]")
 				.setPositiveButton("OK", null).show();*/
 			}
-		}
-	}
+		}//end on Click method
+	}//End ClickListner Class
 
 
 }
