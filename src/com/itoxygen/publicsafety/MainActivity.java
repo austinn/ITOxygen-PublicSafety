@@ -39,6 +39,8 @@ public class MainActivity extends Activity {
 	public String root;
 	public ImageButton switchView,historyButton,upDir,rootButton, sortAlpha;
 	boolean isSorted, isTile, isHistory;
+	int indexOfLastPressed;
+	String parentOfLastPressed;
 
 	//screen
 	int width,height;
@@ -89,37 +91,50 @@ public class MainActivity extends Activity {
 			getDir(root); 
 		} 
 		checkSort();
-		
-		Log.e("LOOK", root);
-
 
 		//button calls
 		//when the up button is pressed
 		upDir.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
+				Log.e("Fuckity", "Up Dir button pushed");
+				File file = new File(parentOfLastPressed);
+				//history.add(path.get(v.getId()));			
+				if (file.isDirectory()) {
+					if(file.canRead()){
+						getDir(file.getPath());//updates the "path" and "item" lists					
+						//CAN WE REPLACE THIS WITH CHECK SORT??
+						if(isSorted) {
+							Collections.sort(item, String.CASE_INSENSITIVE_ORDER);
+							Collections.sort(path, String.CASE_INSENSITIVE_ORDER);
+						}
+						populate();
+						//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+					}
+					else{ 
+						new AlertDialog.Builder(MainActivity.this)
+						.setIcon(R.drawable.ic_launcher)
+						.setTitle("[" + file.getName() + "] folder can't be read!")
+						.setPositiveButton("OK", null).show();
 
-
-				//Check to see if you are at the root
-				if(root !=null){
-					getDir(history.get(history.size()-1));
+					}	
 				}
-				else
-					Log.e(root, "Made it here");
-
-				checkSort();
-			}	
+				else { //opens the file if it isn't a directory
+					//check file type
+					Shared.openPdf(file, MainActivity.this);
+					/*new AlertDialog.Builder(MainActivity.this)
+					.setIcon(R.drawable.ic_launcher)
+					.setTitle("[" + file.getName() + "]")
+					.setPositiveButton("OK", null).show();*/
+				}
+			}
 		});
-
 		//when the root button is pressed
 		rootButton.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
-
 				getDir(root);
 				checkSort();
 			}	
 		});
-
-
 		//when the history button is pressed
 		historyButton.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
@@ -127,7 +142,6 @@ public class MainActivity extends Activity {
 				Log.e("root","History button is pushed");
 			}	
 		});
-
 		//switches from tile view to list view
 		switchView.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
@@ -138,7 +152,6 @@ public class MainActivity extends Activity {
 				startActivity(intent);
 			}	
 		});
-
 		//switches between ascending and descending sort
 		sortAlpha.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
@@ -166,13 +179,11 @@ public class MainActivity extends Activity {
 		//		});
 
 	}
-
 	/**
 	 * Does the ascending and descending sorting and
 	 * changes the color of the button/text
 	 */
 	protected void checkSort() {
-
 		if (isSorted) {
 			//Alpha Sort
 			Collections.sort(item, String.CASE_INSENSITIVE_ORDER); //sorts the filenames
@@ -205,7 +216,6 @@ public class MainActivity extends Activity {
 		}
 		editor.commit();
 	}
-
 	/**
 	 * Loads from SharedPreferences
 	 */
@@ -228,50 +238,41 @@ public class MainActivity extends Activity {
 		File[] files = f.listFiles();
 
 		if(!dirPath.equals(root)) {
-			
 			//the two items need to be removed			
-			
-			//item.add(root); //adds the root to the file directory
-			//path.add(root); //adds the root to the history spinner
-			//item.add("../"); //adds an "up" button to go up one folder
-			//path.add(f.getParent()); 	
+			//					item.add(root); //adds the root to the file directory
+			//					path.add(root); //adds the root to the history spinner
+			item.add("../"); //adds an "up" button to go up one folder
+			path.add(f.getParent());
 		}
 
 		for(int i=0; i < files.length; i++) { //iterate thru the files
 			File file = files[i];
 			if(!file.isHidden() && file.canRead()) { 
 				path.add(file.getPath()); 
-				if(file.isDirectory()) {
-					item.add(file.getName() + "/"); //if the item is a folder
-					//boolean for if it is a folder or not, used to
-					//know when to display a folder icon or file icon
-				} 
-				else {
-					item.add(file.getName()); //if the item is a file
-				}
+				item.add(file.getName());
 			}	
 		}//end for loop
 
-	}//end of get Dir method
+	}//end of getDir method
 
-	public void goToParent(View v) {
-		File file = new File(path.get(v.getId()));
-		if (file.isDirectory()) {
-
-			if(file.canRead()){
-				getDir(path.get(v.getId()));
-				checkSort();
-			}
-			else{ 
-				new AlertDialog.Builder(MainActivity.this)
-				.setIcon(R.drawable.ic_launcher)
-				.setTitle("[" + file.getName() + "] folder can't be read!")
-				.setPositiveButton("OK", null).show(); 
-			}	
-		} else {
-			//this should not happen
-		}
-	}
+	//	public void goToParent(View v) {
+	//		File file = new File(path.get(v.getId()));
+	//		if (file.isDirectory()) {
+	//
+	//			if(file.canRead()){
+	//				getDir(path.get(v.getId()));
+	//				checkSort();
+	//			}
+	//			else{ 
+	//				new AlertDialog.Builder(MainActivity.this)
+	//				.setIcon(R.drawable.ic_launcher)
+	//				.setTitle("[" + file.getName() + "] folder can't be read!")
+	//				.setPositiveButton("OK", null).show(); 
+	//			}	
+	//		} else {
+	//			//this should not happen
+	//		}
+	//	}
 
 	/**
 	 * Helper method that sets up all the buttons
@@ -299,14 +300,13 @@ public class MainActivity extends Activity {
 			for(int j = 0; j < columNum; j++){
 				if(j+(i*columNum) < item.size()){
 					ImageButton imgBtn = new ImageButton(this);
-
 					imgBtn.setBackgroundDrawable(null);
 					imgBtn.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 					imgBtn.setMinimumWidth(width/columNum);
 					imgBtn.setMinimumHeight(width/columNum);
 					imgBtn.setId(j + (i * columNum));
 
-					File file = new File(path.get(j+(i*columNum)));
+					File file = new File(path.get(j+(i*columNum)));// converts the string in the list back to a file
 					if(file.isDirectory()) {
 						imgBtn.setImageResource(R.drawable.psafety_folder);
 					}
@@ -315,24 +315,18 @@ public class MainActivity extends Activity {
 							imgBtn.setImageResource(R.drawable.psafety_mp3);
 						else
 							imgBtn.setImageResource(R.drawable.psafety_file);
-						//						if(file.getName().contains(".pdf")) { imgBtn.setImageResource(R.drawable.pdf); }
-						//						else if(file.getName().contains(".mp3")) { imgBtn.setImageResource(R.drawable.mp3); }
-						//						else if(file.getName().contains(".apk")) { imgBtn.setImageResource(R.drawable.apk); }
 					}
 
 
 					imgBtn.setOnClickListener(new ClickListener());
 					TextView btn = new TextView(this);
-					btn.setText(item.get(j+(i*columNum)));
+					btn.setText(item.get(j+(i*columNum)));//sets the text displayed with the button to the corresponding location in item
 					btn.setTextSize(14);
-
 					btn.setGravity(Gravity.CENTER_HORIZONTAL);
-
 					btn.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 					btn.setWidth(width/columNum);
-					btn.setId(j + (i * columNum));
+					btn.setId(j + (i * columNum));//sets the button ID to the correspondind spot in the array list
 					btn.setOnClickListener(new ClickListener());
-
 					imgRow.addView(imgBtn);
 					textRow.addView(btn);
 				}
@@ -341,8 +335,7 @@ public class MainActivity extends Activity {
 			layout.addView(textRow);
 		}
 
-		ArrayAdapter<String> historyList =
-				new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, history);
+		//ArrayAdapter<String> historyList = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, history);
 		//		historySpinner.setAdapter(historyList); //sets the history arraylist to populate the spinner
 		//		historySpinner.setSelection(history.size()-1); //sets the spinner to display the history correctly
 
@@ -354,19 +347,22 @@ public class MainActivity extends Activity {
 	 */
 	class ClickListener implements OnClickListener {
 		public void onClick(View v) {
-			Log.e(root, "here");
 
 			File file = new File(path.get(v.getId()));
-			Log.e("File Extension:", file.getName());
-			history.add(path.get(v.getId()));			
+			parentOfLastPressed = file.getParent();
+			//history.add(path.get(v.getId()));			
 			if (file.isDirectory()) {
 				if(file.canRead()){
-					getDir(path.get(v.getId()));
+					Log.e("Fuckity", item.get(v.getId())+"");
+					Log.e("Fuckity", v.getId()+"");
+					getDir(path.get(v.getId()));//updates the "path" and "item" lists					
+					//CAN WE REPLACE THIS WITH CHECK SORT??
 					if(isSorted) {
 						Collections.sort(item, String.CASE_INSENSITIVE_ORDER);
 						Collections.sort(path, String.CASE_INSENSITIVE_ORDER);
 					}
 					populate();
+					//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 				}
 				else{ 
 					new AlertDialog.Builder(MainActivity.this)
@@ -376,7 +372,7 @@ public class MainActivity extends Activity {
 
 				}	
 			}
-			else { 
+			else { //opens the file if it isn't a directory
 				//check file type
 				Shared.openPdf(file, MainActivity.this);
 				/*new AlertDialog.Builder(MainActivity.this)
