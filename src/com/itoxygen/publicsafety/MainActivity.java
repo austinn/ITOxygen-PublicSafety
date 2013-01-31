@@ -92,20 +92,7 @@ public class MainActivity extends Activity {
 		//when the up button is pressed
 		upDir.setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
-				if(upDirList.size()<2){
-					getDir(root);
-				}
-				else if (!upDirList.get(upDirList.size()-1).contains("/system")) {
-					getDir(root);
-				}
-				else if (!upDirList.get(upDirList.size()-2).equals("/system")) {
-					getDir(root);
-				}
-				else {
-					Log.v("PATH:", upDirList.get(upDirList.size()-2));
-					getDir(upDirList.get(upDirList.size()-2));
-					
-				}
+				getDir("../");
 			}	
 		});
 
