@@ -70,9 +70,8 @@ public class MainActivityList extends Activity {
 		switchView.setBackgroundColor(Color.GRAY);
 		loadSharedPrefs();
 
-		//root = Environment.getExternalStorageDirectory().getPath(); //gets the root path of SD card
+		root = Environment.getExternalStorageDirectory().getPath(); //gets the root path of SD card
 		//root = Environment.getExternalStorageDirectory().getPath() + "/root_psafety"; //gets the root path of SD card
-		root = Environment.getRootDirectory().getPath();
 
 		history.add("Clear History"); //adds a clear history "button"
 		if(root != null) { getDir(root); }
