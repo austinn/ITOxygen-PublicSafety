@@ -22,18 +22,20 @@ public final class R {
         public static final int file=0x7f020003;
         public static final int folder=0x7f020004;
         public static final int folder_up=0x7f020005;
-        public static final int history=0x7f020006;
-        public static final int ic_action_search=0x7f020007;
-        public static final int ic_launcher=0x7f020008;
-        public static final int ic_media_next=0x7f020009;
-        public static final int ic_media_previous=0x7f02000a;
-        public static final int mp3=0x7f02000b;
-        public static final int pdf=0x7f02000c;
-        public static final int psafety_file=0x7f02000d;
-        public static final int psafety_folder=0x7f02000e;
-        public static final int root=0x7f02000f;
-        public static final int up=0x7f020010;
-        public static final int up_button=0x7f020011;
+        public static final int g5756=0x7f020006;
+        public static final int history=0x7f020007;
+        public static final int ic_action_search=0x7f020008;
+        public static final int ic_launcher=0x7f020009;
+        public static final int ic_media_next=0x7f02000a;
+        public static final int ic_media_previous=0x7f02000b;
+        public static final int mp3=0x7f02000c;
+        public static final int pdf=0x7f02000d;
+        public static final int psafety_file=0x7f02000e;
+        public static final int psafety_folder=0x7f02000f;
+        public static final int psafety_mp3=0x7f020010;
+        public static final int root=0x7f020011;
+        public static final int up=0x7f020012;
+        public static final int up_button=0x7f020013;
     }
     public static final class id {
         public static final int activity_main_layout_action_bar=0x7f080001;

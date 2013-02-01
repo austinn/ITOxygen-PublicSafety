@@ -25,7 +25,7 @@
             android:layout_toLeftOf="@+id/switchView"
             android:contentDescription="@string/activity_main_sort_alphabetically"
             android:background="@null"
-            android:src = "@drawable/up" />
+            android:src = "@drawable/ic_media_previous" />
 
         <ImageButton
             android:id="@+id/historyButton"
