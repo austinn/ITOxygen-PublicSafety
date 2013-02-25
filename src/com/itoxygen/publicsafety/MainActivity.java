@@ -3,11 +3,13 @@ package com.itoxygen.publicsafety;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +22,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -89,7 +92,7 @@ public class MainActivity extends Activity {
 		upDir.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) 
 			{
-				Log.e("FUCK",isHistory+"");
+				Log.e("isHistory",isHistory+"");
 				if(isHistory){
 					isHistory = false;
 					getDir(root);
@@ -139,6 +142,10 @@ public class MainActivity extends Activity {
 				Log.e("root","History button is pushed");
 				if(historyItem.size() != 0){
 					isHistory = true;
+					HashSet hs = new HashSet();
+					hs.addAll(historyItem);
+					historyItem.clear();
+					historyItem.addAll(hs);
 					populate(historyPath,historyItem);
 				}
 
@@ -171,6 +178,33 @@ public class MainActivity extends Activity {
 			}	
 		});
 	}
+	
+	/**
+	 * When physical Back Button is pressed
+	 */
+	public void onBackPressed() {
+		Log.v("BACK", "BACK");
+		final Dialog dialog = new Dialog(MainActivity.this);
+		dialog.setContentView(R.layout.dialog);
+		dialog.setTitle("Are You Sure?");
+		dialog.setCancelable(true);
+		Button confirm = (Button)dialog.findViewById(R.id.confirmExit);
+		Button decline = (Button)dialog.findViewById(R.id.declineExit);
+		confirm.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				finish();
+			}
+		});
+		decline.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				dialog.hide();
+			}
+		});
+		
+		dialog.show();
+		return;
+		}
+	
 	/**
 	 * Does the ascending and descending sorting and
 	 * changes the color of the button/text
