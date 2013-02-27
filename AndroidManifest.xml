@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,6 +24,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivityList" >
+        </activity>
+        <activity android:name=".CrimeSceneForm" >
+        </activity>
+        <activity android:name=".Forms" >
         </activity>
     </application>
 

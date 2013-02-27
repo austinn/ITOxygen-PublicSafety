@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/activity_main_layout_action_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <ImageButton
+            android:id="@+id/rootButton"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="@null"
+            android:src="@drawable/root" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:background="#287AA9"
+        android:height="3dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <ImageButton
+            android:id="@+id/crimescene_form"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="@null"
+            android:src="@drawable/psafety_file" />
+
+    </RelativeLayout>
+
+</LinearLayout>

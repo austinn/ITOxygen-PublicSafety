@@ -17,7 +17,8 @@
             android:layout_alignParentTop="true"
             android:onClick="populateList"
             android:contentDescription="@string/activity_main_sort_by_size"
-            android:src="@android:drawable/ic_menu_sort_by_size" />
+            android:background="@null"
+            android:src="@drawable/listview" />
 
         <ImageButton
             android:id="@+id/sortAlpha"
@@ -27,7 +28,7 @@
             android:layout_toLeftOf="@+id/switchView"
             android:contentDescription="@string/activity_main_sort_alphabetically"
             android:background="@null"
-            android:src = "@drawable/up" />
+            android:src = "@drawable/az_sort" />
         
         <ImageButton
             android:id="@+id/historyButton"
@@ -64,6 +65,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/upButton"
+            android:layout_marginTop="3dp"
             android:background="#287AA9"
             android:height="3dp" />
 

@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	public static final String PREFS_NAME = "MyPrefsFile";
@@ -70,7 +71,7 @@ public class MainActivity extends Activity {
 		File l = new File(root);
 		top = l.getParent();
 		parentOfLastPressed = top;
-
+		
 		loadSharedPrefs();
 		if(!isTile) {
 			saveSharedPrefs("Activity");
@@ -147,6 +148,8 @@ public class MainActivity extends Activity {
 					historyItem.clear();
 					historyItem.addAll(hs);
 					populate(historyPath,historyItem);
+				} else {
+					Toast.makeText(getApplicationContext(), "Nothing In History", Toast.LENGTH_SHORT).show();
 				}
 
 			}	
@@ -178,12 +181,11 @@ public class MainActivity extends Activity {
 			}	
 		});
 	}
-	
+
 	/**
 	 * When physical Back Button is pressed
 	 */
 	public void onBackPressed() {
-		Log.v("BACK", "BACK");
 		final Dialog dialog = new Dialog(MainActivity.this);
 		dialog.setContentView(R.layout.dialog);
 		dialog.setTitle("Are You Sure?");
@@ -200,11 +202,11 @@ public class MainActivity extends Activity {
 				dialog.hide();
 			}
 		});
-		
+
 		dialog.show();
 		return;
-		}
-	
+	}
+
 	/**
 	 * Does the ascending and descending sorting and
 	 * changes the color of the button/text
@@ -216,13 +218,13 @@ public class MainActivity extends Activity {
 			//Alpha Sort
 			Collections.sort(names, String.CASE_INSENSITIVE_ORDER); //sorts the filenames
 			Collections.sort(paths, String.CASE_INSENSITIVE_ORDER); //sorts the spinner
-			sortAlpha.setImageResource(R.drawable.ic_media_next);
+			sortAlpha.setImageResource(R.drawable.az_sort);
 		}
 		else {	
 			//Reverse Alpha Sort
 			Collections.sort(names, Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER)); //sorts the filenames
 			Collections.sort(paths, Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER)); //sorts the spinner
-			sortAlpha.setImageResource(R.drawable.ic_media_previous);
+			sortAlpha.setImageResource(R.drawable.za_sort);
 		}
 		populate(paths, names); //puts buttons on screen
 	}
@@ -319,6 +321,7 @@ public class MainActivity extends Activity {
 					imgBtn.setMinimumWidth(width/columNum);
 					imgBtn.setMinimumHeight(width/columNum);
 					imgBtn.setId(j + (i * columNum));
+					imgBtn.setTag(names.get(j+(i*columNum)));
 
 					File file = new File(paths.get(j+(i*columNum)));// converts the string in the list back to a file
 					if(file.isDirectory()) {
@@ -327,8 +330,12 @@ public class MainActivity extends Activity {
 					else {
 						if (file.getName().contains(".mp3"))
 							imgBtn.setImageResource(R.drawable.psafety_mp3);
-						else
+						else if (file.getName().contains(".pdf"))
 							imgBtn.setImageResource(R.drawable.psafety_file);
+						else {
+							imgBtn.setImageResource(R.drawable.psafety_file);
+						}
+
 					}
 					imgBtn.setOnClickListener(new ClickListener());
 					TextView btn = new TextView(this);
@@ -354,52 +361,59 @@ public class MainActivity extends Activity {
 	 */
 	class ClickListener implements OnClickListener {
 		public void onClick(View v) {
-			File file = new File(path.get(v.getId()));
-			parentOfLastPressed = file.getParent();		
-			if (file.isDirectory()) {
-				if(file.canRead()){
-					getDir(path.get(v.getId()));//updates the "path" and "item" lists
-					if(isSorted) {
-						Collections.sort(item, String.CASE_INSENSITIVE_ORDER);
-						Collections.sort(path, String.CASE_INSENSITIVE_ORDER);
+
+			if(v.getTag().equals("Forms")) {
+				Intent intent = new Intent(getApplicationContext(), Forms.class);
+				finish();
+				startActivity(intent);
+			} else {
+				File file = new File(path.get(v.getId()));
+				parentOfLastPressed = file.getParent();		
+				if (file.isDirectory()) {
+					if(file.canRead()){
+						getDir(path.get(v.getId()));//updates the "path" and "item" lists
+						if(isSorted) {
+							Collections.sort(item, String.CASE_INSENSITIVE_ORDER);
+							Collections.sort(path, String.CASE_INSENSITIVE_ORDER);
+						}
+						isHistory = false;
+						populate(path, item);
 					}
-					isHistory = false;
-					populate(path, item);
+					else{ 
+						new AlertDialog.Builder(MainActivity.this)
+						.setIcon(R.drawable.ic_launcher)
+						.setTitle("[" + file.getName() + "] folder can't be read!")
+						.setPositiveButton("OK", null).show();
+					}	
 				}
-				else{ 
-					new AlertDialog.Builder(MainActivity.this)
-					.setIcon(R.drawable.ic_launcher)
-					.setTitle("[" + file.getName() + "] folder can't be read!")
-					.setPositiveButton("OK", null).show();
-				}	
-			}
-			else { //opens the file if it isn't a directory
-				historyPath.add(file.getPath());
-				historyItem.add(file.getName());
+				else { //opens the file if it isn't a directory
+					historyPath.add(file.getPath());
+					historyItem.add(file.getName());
 
 
-				//Save SharedPrefs
-				SharedPreferences historyPathFiles = v.getContext().getSharedPreferences("historyPath", Context.MODE_PRIVATE);
-				SharedPreferences historyItemFiles = v.getContext().getSharedPreferences("historyItem", Context.MODE_PRIVATE);
+					//Save SharedPrefs
+					SharedPreferences historyPathFiles = v.getContext().getSharedPreferences("historyPath", Context.MODE_PRIVATE);
+					SharedPreferences historyItemFiles = v.getContext().getSharedPreferences("historyItem", Context.MODE_PRIVATE);
 
-				SharedPreferences.Editor pathEditor = historyPathFiles.edit();
-				SharedPreferences.Editor itemEditor = historyItemFiles.edit();
+					SharedPreferences.Editor pathEditor = historyPathFiles.edit();
+					SharedPreferences.Editor itemEditor = historyItemFiles.edit();
 
-				pathEditor.putInt("historyPathSize", historyPath.size());
-				itemEditor.putInt("historyItemSize", historyItem.size());
+					pathEditor.putInt("historyPathSize", historyPath.size());
+					itemEditor.putInt("historyItemSize", historyItem.size());
 
-				for(int i = 0; i < historyPath.size(); i ++) {
+					for(int i = 0; i < historyPath.size(); i ++) {
 
-					pathEditor.remove("pathHistory_" + i);
-					pathEditor.putString("pathHistory_" + i, historyPath.get(i));
+						pathEditor.remove("pathHistory_" + i);
+						pathEditor.putString("pathHistory_" + i, historyPath.get(i));
 
-					itemEditor.remove("itemHistory_" + i);
-					itemEditor.putString("itemHistory_" + i, historyItem.get(i));
+						itemEditor.remove("itemHistory_" + i);
+						itemEditor.putString("itemHistory_" + i, historyItem.get(i));
 
+					}
+					pathEditor.commit();
+					itemEditor.commit();
+					Shared.openPdf(file, MainActivity.this);
 				}
-				pathEditor.commit();
-				itemEditor.commit();
-				Shared.openPdf(file, MainActivity.this);
 			}
 		}//end on Click method
 	}//End ClickListner Class
