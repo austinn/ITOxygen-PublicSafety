@@ -39,6 +39,9 @@ public class MainActivity extends Activity {
 	//screen
 	int width,height;
 	Display display;
+	
+	//TODO fix the alpha sort between history and normal view 
+	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -89,7 +92,6 @@ public class MainActivity extends Activity {
 		upDir.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) 
 			{
-				Log.e("FUCK",isHistory+"");
 				if(isHistory){
 					isHistory = false;
 					getDir(root);
@@ -102,10 +104,11 @@ public class MainActivity extends Activity {
 						if (file.isDirectory()) {
 							if(file.canRead()){
 								getDir(file.getPath());//updates the "path" and "item" lists					
-								if(isSorted) {
-									Collections.sort(item, String.CASE_INSENSITIVE_ORDER);
-									Collections.sort(path, String.CASE_INSENSITIVE_ORDER);
-								}
+//								if(isSorted) {
+//									Collections.sort(item, String.CASE_INSENSITIVE_ORDER);
+//									Collections.sort(path, String.CASE_INSENSITIVE_ORDER);
+//								}
+								checkSort(path,item);
 								populate(path, item);
 							}
 							else{ 
@@ -129,7 +132,9 @@ public class MainActivity extends Activity {
 		rootButton.setOnClickListener(new OnClickListener(){
 			public void onClick(View arg0) {
 				getDir(root);
+				isHistory = false;
 				checkSort(path,item);
+
 			}	
 		});
 		//when the history button is pressed
@@ -325,10 +330,11 @@ public class MainActivity extends Activity {
 			if (file.isDirectory()) {
 				if(file.canRead()){
 					getDir(path.get(v.getId()));//updates the "path" and "item" lists
-					if(isSorted) {
-						Collections.sort(item, String.CASE_INSENSITIVE_ORDER);
-						Collections.sort(path, String.CASE_INSENSITIVE_ORDER);
-					}
+//					if(isSorted) {
+//						Collections.sort(item, String.CASE_INSENSITIVE_ORDER);
+//						Collections.sort(path, String.CASE_INSENSITIVE_ORDER);
+//					}
+					checkSort(path,item);
 					isHistory = false;
 					populate(path, item);
 				}
